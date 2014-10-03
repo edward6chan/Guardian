@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SetUpEmergencyPlan"
+            android:label="@string/title_activity_set_up_emergency_plan" >
+        </activity>
     </application>
 
 </manifest>
