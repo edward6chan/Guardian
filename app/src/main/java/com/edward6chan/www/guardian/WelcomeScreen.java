@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.content.Intent;
+
 
 
 public class WelcomeScreen extends Activity {
@@ -22,7 +26,12 @@ public class WelcomeScreen extends Activity {
         return true;
     }
 
+    public void nextButton (View v) {
 
+        Button button = (Button) v;
+        Intent intentWelcome = new Intent(WelcomeScreen.this, SetUpEmergencyPlan.class);
+        WelcomeScreen.this.startActivity(intentWelcome);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

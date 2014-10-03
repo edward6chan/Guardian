@@ -9,7 +9,7 @@
     tools:context="com.edward6chan.www.guardian.SetUpEmergencyPlan">
 
     <TextView
-        android:text="@string/hello_world"
+        android:text="@string/title_activity_set_up_emergency_plan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

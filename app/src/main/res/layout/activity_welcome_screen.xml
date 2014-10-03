@@ -36,5 +36,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="41dp"
-        android:textStyle="bold|normal" />
+        android:textStyle="bold|normal"
+        android:onClick="nextButton" />
 </RelativeLayout>
