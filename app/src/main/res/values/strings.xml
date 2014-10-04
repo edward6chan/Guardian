@@ -9,5 +9,8 @@
     <string name="title_activity_set_up_emergency_plan">SetUpEmergencyPlan</string>
     <string name="title_activity_assign_angel">AssignAngel</string>
     <string name="hello_world">Hello world!</string>
+    <string name="set_up_emer_msg_title">Assign your Angel:</string>
+    <string name="set_up_emer_msg">Your Angel is who Guardian will contact and send your location if you become unresponsive.</string>
+    <string name="assign_angel_button_text">Assign Your Angel</string>
 
 </resources>
