@@ -22,6 +22,10 @@
             android:name=".SetUpEmergencyPlan"
             android:label="@string/title_activity_set_up_emergency_plan" >
         </activity>
+        <activity
+            android:name=".AssignAngel"
+            android:label="@string/title_activity_assign_angel" >
+        </activity>
     </application>
 
 </manifest>
