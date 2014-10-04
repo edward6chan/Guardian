@@ -4,9 +4,36 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.content.Intent;
+import android.provider.ContactsContract;
+import android.net.Uri;
+import android.database.Cursor;
+import android.view.View;
+import android.widget.Button;
 
 
 public class SetUpEmergencyPlan extends Activity {
+
+    final int PICK_CONTACT = 1;
+
+    @Override
+    public void onActivityResult(int reqCode, int resultCode, Intent data) {
+        super.onActivityResult(reqCode, resultCode, data);
+
+        switch (reqCode) {
+            case (PICK_CONTACT) :
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri contactData = data.getData();
+                    Cursor c =  getContentResolver().query(contactData, null, null, null, null);
+                    if (c.moveToFirst()) {
+                        String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        // TODO Whatever you want to do with the selected contact name.
+                    }
+                }
+                break;
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,4 +60,13 @@ public class SetUpEmergencyPlan extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void assignAngelButton (View v) {
+
+        Button button = (Button) v;
+        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(intent, PICK_CONTACT);
+
+    }
+
 }
