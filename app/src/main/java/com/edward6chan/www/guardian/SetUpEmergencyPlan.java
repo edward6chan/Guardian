@@ -27,7 +27,10 @@ public class SetUpEmergencyPlan extends Activity {
                     Cursor c =  getContentResolver().query(contactData, null, null, null, null);
                     if (c.moveToFirst()) {
                         String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        // TODO Whatever you want to do with the selected contact name.
+
+                        Intent i = new Intent(getApplicationContext(), ManageGuardian.class);
+                        i.putExtra("guardian_name", name);
+                        startActivity(i);
                     }
                 }
                 break;
@@ -68,5 +71,6 @@ public class SetUpEmergencyPlan extends Activity {
         startActivityForResult(intent, PICK_CONTACT);
 
     }
+
 
 }

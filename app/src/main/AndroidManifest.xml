@@ -26,6 +26,10 @@
             android:name=".AssignAngel"
             android:label="@string/title_activity_assign_angel" >
         </activity>
+        <activity
+            android:name=".ManageGuardian"
+            android:label="@string/title_activity_manage_guardian" >
+        </activity>
     </application>
 
 </manifest>
