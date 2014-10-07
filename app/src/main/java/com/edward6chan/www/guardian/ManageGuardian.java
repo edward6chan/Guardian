@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Intent;
 import android.widget.TextView;
 
 
@@ -18,10 +17,16 @@ public class ManageGuardian extends Activity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
+
+            //project name
             String value = extras.getString("guardian_name");
-            TextView tv = (TextView)findViewById(R.id.guardian);
+            TextView tv = (TextView)findViewById(R.id.guardian_name);
             tv.setText(value);
 
+            //project phone number
+            value = extras.getString("guardian_phone_number");
+            tv = (TextView)findViewById(R.id.guardian_phone_number);
+            tv.setText(value);
         }
 
     }

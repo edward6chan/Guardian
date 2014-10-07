@@ -41,18 +41,28 @@ public class SetUpEmergencyPlan extends Activity {
                     String[] projection = new String[] {
                             ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
                     Uri contacts =  data.getData();
-                    Cursor managedCursor = getContentResolver().query(contacts,
+                    Cursor cursor = getContentResolver().query(contacts,
                             projection, // Which columns to return
                             null,       // Which rows to return (all rows)
                             // Selection arguments (with a given ID)
                             null,
                             // Put the results in ascending order by name
                             null);
-                    if (managedCursor.moveToFirst()) {
-                        String name = managedCursor.getString(managedCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    if (cursor.moveToFirst()) {
+                        String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                        Intent i = new Intent(getApplicationContext(), ManageGuardian.class);
-                        i.putExtra("guardian_name", name);
+                        Intent i = new Intent(this, ManageGuardian.class);
+                        Bundle guardian_info = new Bundle();
+                        guardian_info.putString("guardian_name", name);
+                        guardian_info.putString("guardian_phone_number", phoneNumber);
+                        i.putExtras(guardian_info);
+                        //i.putExtra("guardian_name", name);
+
+
+                        //i.putExtra("guardian_phone_number", phoneNumber);
+
+
                         startActivity(i);
                     }
                 }
