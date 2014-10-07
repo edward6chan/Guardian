@@ -6,10 +6,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.net.Uri;
 import android.database.Cursor;
 import android.view.View;
 import android.widget.Button;
+import com.getpebble.android.kit.Constants;
+import com.getpebble.android.kit.PebbleKit;
 
 
 public class SetUpEmergencyPlan extends Activity {
@@ -23,10 +27,29 @@ public class SetUpEmergencyPlan extends Activity {
         switch (reqCode) {
             case (PICK_CONTACT) :
                 if (resultCode == Activity.RESULT_OK) {
+                    /*
                     Uri contactData = data.getData();
                     Cursor c =  getContentResolver().query(contactData, null, null, null, null);
                     if (c.moveToFirst()) {
                         String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+                        Intent i = new Intent(getApplicationContext(), ManageGuardian.class);
+                        i.putExtra("guardian_name", name);
+                        startActivity(i);
+                    }
+                    */
+                    String[] projection = new String[] {
+                            ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
+                    Uri contacts =  data.getData();
+                    Cursor managedCursor = getContentResolver().query(contacts,
+                            projection, // Which columns to return
+                            null,       // Which rows to return (all rows)
+                            // Selection arguments (with a given ID)
+                            null,
+                            // Put the results in ascending order by name
+                            null);
+                    if (managedCursor.moveToFirst()) {
+                        String name = managedCursor.getString(managedCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                         Intent i = new Intent(getApplicationContext(), ManageGuardian.class);
                         i.putExtra("guardian_name", name);
@@ -42,6 +65,8 @@ public class SetUpEmergencyPlan extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_up_emergency_plan);
+        PebbleKit.startAppOnPebble(getApplicationContext(), Constants.SPORTS_UUID);
+
     }
 
 
@@ -63,7 +88,7 @@ public class SetUpEmergencyPlan extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+/*
     public void assignAngelButton (View v) {
 
         Button button = (Button) v;
@@ -71,6 +96,11 @@ public class SetUpEmergencyPlan extends Activity {
         startActivityForResult(intent, PICK_CONTACT);
 
     }
+    */
 
-
+    public void pickContact(View view) {
+        Intent intent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);
+        intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+        startActivityForResult(intent, PICK_CONTACT);
+    }
 }
