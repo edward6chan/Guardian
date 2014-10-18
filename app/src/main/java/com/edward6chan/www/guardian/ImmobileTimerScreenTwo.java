@@ -45,6 +45,7 @@ public class ImmobileTimerScreenTwo extends Activity {
     public void nextButton (View v) {
 
         Button button = (Button) v;
-
+        Intent intentWelcome = new Intent(ImmobileTimerScreenTwo.this, ImmobileTimer.class);
+        ImmobileTimerScreenTwo.this.startActivity(intentWelcome);
     }
 }

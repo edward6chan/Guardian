@@ -84,7 +84,7 @@ public class SetUpEmergencyPlan extends Activity {
 
 
                         //i.putExtra("guardian_phone_number", phoneNumber);
-                        requestLocationForSms();
+                        //requestLocationForSms();
                         //sendSMS(phoneNumber, "Hi You got a message!");
                         //startActivity(i);
 

@@ -1,41 +1,27 @@
 package com.edward6chan.www.guardian;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 
 public class ImmobileTimer extends Activity {
 
-    CountDownTimer workoutTimer;
-    CountDownTimer restTimer;
+    private EditText setTimer;
+    private int minutes;
+    private TextView displayTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_immobile_timer);
-
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startWorkoutTimer(0);
-
-            }
-        });
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (workoutTimer!=null ){
-                    workoutTimer.cancel();
-                }
-                if (restTimer!=null ){
-                    restTimer.cancel();
-                }
-            }
-        });
     }
 
 
@@ -56,5 +42,13 @@ public class ImmobileTimer extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void nextButton (View v) {
+
+        Button button = (Button) v;
+        setTimer = (EditText) findViewById(R.id.timer_input);
+        displayTimer = (TextView) findViewById(R.id.test_timer);
+        minutes = Integer.parseInt(setTimer.getText().toString());
     }
 }
