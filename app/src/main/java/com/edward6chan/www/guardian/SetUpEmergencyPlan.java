@@ -87,6 +87,9 @@ public class SetUpEmergencyPlan extends Activity {
                         requestLocationForSms();
                         //sendSMS(phoneNumber, "Hi You got a message!");
                         //startActivity(i);
+
+                        i = new Intent(SetUpEmergencyPlan.this, ImmobileTimerScreenOne.class);
+                        SetUpEmergencyPlan.this.startActivity(i);
                     }
                 }
                 break;
