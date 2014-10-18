@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import com.getpebble.android.kit.Constants;
 import com.getpebble.android.kit.PebbleKit;
+import android.telephony.SmsManager;
+
 
 
 public class SetUpEmergencyPlan extends Activity {
@@ -62,7 +64,7 @@ public class SetUpEmergencyPlan extends Activity {
 
                         //i.putExtra("guardian_phone_number", phoneNumber);
 
-
+                        sendSMS(phoneNumber, "Hi You got a message!");
                         startActivity(i);
                     }
                 }
@@ -112,5 +114,11 @@ public class SetUpEmergencyPlan extends Activity {
         Intent intent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);
         intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
         startActivityForResult(intent, PICK_CONTACT);
+    }
+
+    private void sendSMS(String phoneNumber, String message)
+    {
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, null, null);
     }
 }
