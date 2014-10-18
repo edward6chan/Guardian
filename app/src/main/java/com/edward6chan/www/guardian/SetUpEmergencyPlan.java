@@ -15,14 +15,34 @@ import android.widget.Button;
 import com.getpebble.android.kit.Constants;
 import com.getpebble.android.kit.PebbleKit;
 import android.telephony.SmsManager;
+import android.location.*;
+import android.os.Handler;
+import android.os.Bundle;
+import android.text.format.DateUtils;
+import android.util.Log;
+import android.widget.EditText;
+import java.util.List;
+
+
+
 
 
 
 public class SetUpEmergencyPlan extends Activity {
 
+    private final String TAG = "ExampleSmsActivity";
+
     final int PICK_CONTACT = 1;
 
-    @Override
+    private LocationManager mLocationManager;
+    private String mProviderName;
+    private Handler mHandler;
+
+    private boolean mLocationPending;
+
+    String phoneNumber;
+
+        @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
 
@@ -52,7 +72,7 @@ public class SetUpEmergencyPlan extends Activity {
                             null);
                     if (cursor.moveToFirst()) {
                         String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                         Intent i = new Intent(this, ManageGuardian.class);
                         Bundle guardian_info = new Bundle();
@@ -63,9 +83,9 @@ public class SetUpEmergencyPlan extends Activity {
 
 
                         //i.putExtra("guardian_phone_number", phoneNumber);
-
-                        sendSMS(phoneNumber, "Hi You got a message!");
-                        startActivity(i);
+                        requestLocationForSms();
+                        //sendSMS(phoneNumber, "Hi You got a message!");
+                        //startActivity(i);
                     }
                 }
                 break;
@@ -120,5 +140,73 @@ public class SetUpEmergencyPlan extends Activity {
     {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
+    }
+
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            sendLocationSms(location);
+            mLocationManager.removeUpdates(this);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle bundle) {
+            Log.e(TAG, "onStatusChanged");
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.e(TAG, "onProviderEnabled");
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.e(TAG, "onProviderDisabled");
+        }
+    };
+
+    public void requestLocationForSms() {
+        if (mProviderName != null && mLocationPending == false) {
+            mLocationPending = true;
+
+            Location lastLocation = mLocationManager.getLastKnownLocation(mProviderName);
+            // if we have a location that's newer than 10 minutes, use it; otherwise get a new location
+            if (lastLocation != null && (System.currentTimeMillis() - lastLocation.getTime() > DateUtils.MINUTE_IN_MILLIS * 10)) {
+                mLocationManager.requestLocationUpdates(mProviderName,
+                        10000,
+                        10,
+                        mLocationListener);
+            } else {
+                sendLocationSms(lastLocation);
+            }
+        }
+    }
+    public void sendLocationSms(Location l) {
+        if (mLocationPending) {
+            mLocationPending = false;
+
+            // send SMS with GPS coordinates
+            SmsManager smsManager = SmsManager.getDefault();
+            String locationString = "Get me: " + l.getLatitude() + ", " + l.getLongitude();
+            smsManager.sendTextMessage(phoneNumber, null, locationString, null, null);
+
+            // get address text if we can
+            Geocoder geocoder = new Geocoder(SetUpEmergencyPlan.this);
+
+            try {
+                List<Address> addresses = geocoder.getFromLocation(l.getLatitude(), l.getLongitude(), 1);
+
+                if (addresses.size() > 0) {
+                    Address a = addresses.get(0);
+                    String addressText = "";
+                    for (int i = 0; i <= a.getMaxAddressLineIndex(); i++) {
+                        addressText += a.getAddressLine(i) + " ";
+                    }
+                    smsManager.sendTextMessage(phoneNumber, null, addressText, null, null);
+                }
+            } catch (Exception e) {
+                // unable to geocode
+            }
+        }
     }
 }
