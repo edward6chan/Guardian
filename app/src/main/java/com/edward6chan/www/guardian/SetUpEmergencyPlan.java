@@ -22,6 +22,7 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.EditText;
 import java.util.List;
+import android.content.Context;
 
 
 
@@ -98,6 +99,17 @@ public class SetUpEmergencyPlan extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_up_emergency_plan);
         PebbleKit.startAppOnPebble(getApplicationContext(), Constants.SPORTS_UUID);
+
+        mLocationManager =
+                (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setCostAllowed(false);
+
+        mProviderName = mLocationManager.getBestProvider(criteria, true);
+
+        mHandler = new Handler();
 
     }
 
