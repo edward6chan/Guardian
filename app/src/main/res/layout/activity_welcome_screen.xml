@@ -2,40 +2,68 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+
     tools:context=".WelcomeScreen">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/Welcome"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentEnd="false"
-        android:text="@string/welcome_message"
-        android:textSize="30dp" />
+    <LinearLayout
+        android:id="@+id/welcome_screen_header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_height"
+        android:background="@color/guardian_blue"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <EditText
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_to_guardian"
+            android:textColor="@color/guardian_white"
+            android:textSize="@dimen/text_header" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/Welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/Welcome2"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/welcome_screen_header"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="135dp"
+        android:gravity="center"
+        android:padding="@dimen/text_padding_instructions"
+        android:text="@string/welcome_message"
+        android:textSize="@dimen/text_instructions_large" />
+
+    <ImageView
+        android:id="@+id/image_welcome"
+        android:layout_width="180dp"
+        android:layout_centerInParent="true"
+        android:layout_height="180dp"
+        android:layout_below="@id/Welcome"
+        android:scaleType="centerInside" />
+
+    <TextView
+        android:id="@+id/Welcome2"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/image_welcome"
+        android:paddingLeft="@dimen/text_padding_instructions"
+        android:paddingRight="@dimen/text_padding_instructions"
         android:text="@string/welcome_message_two"
-        android:textSize="30dp" />
+        android:textSize="@dimen/text_instructions_large" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/nextButton"
         android:id="@+id/NextButton"
-        android:layout_alignParentBottom="true"
+        android:background="@color/guardian_blue"
+        android:layout_below="@id/Welcome2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="41dp"
+        android:layout_marginLeft="@dimen/text_padding_instructions"
+        android:layout_marginTop="20dp"
+        android:onClick="nextButton"
+        android:text="@string/nextButton"
         android:textStyle="bold|normal"
-        android:onClick="nextButton" />
+        android:textSize="@dimen/text_header"
+        android:textColor="@color/guardian_white"/>
 </RelativeLayout>
