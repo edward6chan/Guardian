@@ -1,9 +1,8 @@
 package com.edward6chan.www.guardian;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +16,20 @@ public class ImmobileTimer extends Activity {
     private EditText setTimer;
     private int minutes;
     private TextView displayTimer;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_immobile_timer);
+
+        mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERNCES", MODE_PRIVATE);
+
+        String timeSaved = mSharedPreferences.getString("TIMER", null);
+        if(timeSaved!=null) {
+            displayTimer.setText(timeSaved);
+        }
+
     }
 
 
@@ -51,5 +59,7 @@ public class ImmobileTimer extends Activity {
         displayTimer = (TextView) findViewById(R.id.test_timer);
         minutes = Integer.parseInt(setTimer.getText().toString());
         displayTimer.setText(""+ minutes);
+
+        mSharedPreferences.edit().putString("TIMER", minutes+"").commit();
     }
 }
