@@ -50,5 +50,6 @@ public class ImmobileTimer extends Activity {
         setTimer = (EditText) findViewById(R.id.timer_input);
         displayTimer = (TextView) findViewById(R.id.test_timer);
         minutes = Integer.parseInt(setTimer.getText().toString());
+        displayTimer.setText(""+ minutes);
     }
 }
