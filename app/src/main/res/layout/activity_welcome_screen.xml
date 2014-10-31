@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@color/guardian_white"
     tools:context=".WelcomeScreen">
 
     <LinearLayout
@@ -30,6 +30,7 @@
         android:gravity="center"
         android:padding="@dimen/text_padding_instructions"
         android:text="@string/welcome_message"
+        android:textColor="@color/guardian_black"
         android:textSize="@dimen/text_instructions_large" />
 
     <ImageView
@@ -38,7 +39,8 @@
         android:layout_centerInParent="true"
         android:layout_height="180dp"
         android:layout_below="@id/Welcome"
-        android:scaleType="centerInside" />
+        android:scaleType="centerInside"
+        android:src="@drawable/image_welcome"/>
 
     <TextView
         android:id="@+id/Welcome2"
@@ -49,7 +51,10 @@
         android:layout_below="@id/image_welcome"
         android:paddingLeft="@dimen/text_padding_instructions"
         android:paddingRight="@dimen/text_padding_instructions"
+        android:paddingBottom="10dp"
+        android:paddingTop="20dp"
         android:text="@string/welcome_message_two"
+        android:textColor="@color/guardian_black"
         android:textSize="@dimen/text_instructions_large" />
 
     <Button
@@ -57,13 +62,13 @@
         android:background="@color/guardian_blue"
         android:layout_below="@id/Welcome2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="@dimen/text_padding_instructions"
+        android:layout_marginLeft="@dimen/button_padding_instructions"
         android:layout_marginTop="20dp"
         android:onClick="nextButton"
         android:text="@string/nextButton"
         android:textStyle="bold|normal"
-        android:textSize="@dimen/text_header"
+        android:textSize="@dimen/button_text_size"
         android:textColor="@color/guardian_white"/>
 </RelativeLayout>

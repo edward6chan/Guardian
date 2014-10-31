@@ -3,4 +3,5 @@
 
     <color name="guardian_blue">#2d7a8c</color>
     <color name="guardian_white">#ffffff</color>
+    <color name="guardian_black">#000000</color>
 </resources>
