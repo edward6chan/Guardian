@@ -14,7 +14,7 @@ import android.widget.Button;
 public class ConfirmAngel extends Activity {
 
     private SharedPreferences mSharedPreferences;
-    String name, contactNumber;
+    String name, phoneNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,11 +24,11 @@ public class ConfirmAngel extends Activity {
         mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERENCES", MODE_PRIVATE);
 
         name = intentExtras.getString("guardian_name");
-        contactNumber = intentExtras.getString("guardian_phone_number");
+        phoneNumber = intentExtras.getString("guardian_phone_number");
 
         TextView tvContact = (TextView)findViewById(R.id.tv_angel_info);
 
-        tvContact.setText(name +", " + contactNumber);
+        tvContact.setText(name +", " + phoneNumber);
     }
 
 
@@ -54,11 +54,18 @@ public class ConfirmAngel extends Activity {
     public void confirmAngelButton (View v) {
 
         Button button = (Button) v;
+        Bundle guardian_info = new Bundle();
+
 
         mSharedPreferences.edit().putString("ANGEL_NAME", name+"").commit();
         mSharedPreferences.edit().putString("guardian_phone_number", name+"").commit();
 
         Intent i = new Intent(ConfirmAngel.this, SendTextToAngel.class);
+
+        guardian_info.putString("guardian_name", name);
+        guardian_info.putString("guardian_phone_number", phoneNumber);
+        i.putExtras(guardian_info);
+
         ConfirmAngel.this.startActivity(i);
     }
 }

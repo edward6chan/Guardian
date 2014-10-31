@@ -11,11 +11,17 @@ import android.widget.Button;
 
 
 public class SendTextToAngel extends Activity {
+    String name, phoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_text_to_angel);
+
+        Bundle intentExtras = getIntent().getExtras();
+
+        name = intentExtras.getString("guardian_name");
+        phoneNumber = intentExtras.getString("guardian_phone_number");
     }
 
 
@@ -46,8 +52,6 @@ public class SendTextToAngel extends Activity {
     public void sendTextMessageButton (View v) {
 
         Button button = (Button) v;
-
-        String phoneNumber = "4129158823";
 
         sendSMS(phoneNumber, "Hi You got a message!");
 
