@@ -58,7 +58,7 @@ public class ConfirmAngel extends Activity {
         mSharedPreferences.edit().putString("ANGEL_NAME", name+"").commit();
         mSharedPreferences.edit().putString("guardian_phone_number", name+"").commit();
 
-        Intent i = new Intent(this, SendTextToAngel.class);
+        Intent i = new Intent(ConfirmAngel.this, SendTextToAngel.class);
         ConfirmAngel.this.startActivity(i);
     }
 }
