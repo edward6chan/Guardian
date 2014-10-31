@@ -1,6 +1,7 @@
 package com.edward6chan.www.guardian;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,25 +10,28 @@ import android.widget.TextView;
 
 public class ManageGuardian extends Activity {
 
-
+    private SharedPreferences mSharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_guardian);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+        mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERENCES", MODE_PRIVATE);
+        String name = mSharedPreferences.getString("ANGEL_NAME", null);
 
-            //project name
-            String value = extras.getString("guardian_name");
+        String phoneNumber = mSharedPreferences.getString("guardian_phone_number", null);
+
+        //Bundle extras = getIntent().getExtras();
+        //if (extras != null) {
+
+            //pulling name from shared preferences
             TextView tv = (TextView)findViewById(R.id.guardian_name);
-            tv.setText(value);
+            tv.setText(name);
 
-            //project phone number
-            value = extras.getString("guardian_phone_number");
+            //pulling number from shared preferences
             tv = (TextView)findViewById(R.id.guardian_phone_number);
-            tv.setText(value);
-        }
+            tv.setText(phoneNumber);
+        //}
 
     }
 

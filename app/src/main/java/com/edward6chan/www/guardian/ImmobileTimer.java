@@ -1,6 +1,7 @@
 package com.edward6chan.www.guardian;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -60,6 +61,10 @@ public class ImmobileTimer extends Activity {
         minutes = Integer.parseInt(setTimer.getText().toString());
         displayTimer.setText(""+ minutes);
 
-        mSharedPreferences.edit().putString("TIMER", minutes+"").commit();
+        mSharedPreferences.edit().putString("TIMER", minutes + "").commit();
+
+
+        Intent i = new Intent(ImmobileTimer.this, Timer.class);
+        ImmobileTimer.this.startActivity(i);
     }
 }

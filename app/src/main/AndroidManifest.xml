@@ -65,6 +65,10 @@
             android:name=".SendTextToAngel"
             android:label="@string/title_activity_send_text_to_angel" >
         </activity>
+        <activity
+            android:name=".Timer"
+            android:label="@string/title_activity_timer" >
+        </activity>
     </application>
 
 </manifest>

@@ -55,7 +55,10 @@ public class SendTextToAngel extends Activity {
 
         sendSMS(phoneNumber, "Hi You got a message!");
 
-        //Intent i = new Intent(this, SendTextToAngel.class);
-        //ConfirmAngel.this.startActivity(i);
+        Intent i = new Intent(SendTextToAngel.this, ImmobileTimerScreenOne.class);
+        SendTextToAngel.this.startActivity(i);
+
+        //Intent i = new Intent(SendTextToAngel.this, ManageGuardian.class);
+        //SendTextToAngel.this.startActivity(i);
     }
 }
