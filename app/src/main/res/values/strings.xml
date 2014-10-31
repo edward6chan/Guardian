@@ -3,6 +3,7 @@
 
     <string name="app_name">Guardian</string>
     <string name="welcome_to_guardian">Welcome to Guardian!</string>
+    <string name="setup_emergency_plan">Setup Emergency Plan</string>
     <string name="welcome_message">Guardian is the simplest way to feel safe while you\'re traveling.</string>
     <string name="welcome_message_two">Let\'s begin by setting up your Emergency Plan.</string>
     <string name="action_settings">Settings</string>
@@ -20,6 +21,7 @@
     <string name="immobile_timer_message_two">If you do not respond to the notification. Guardian will alert your Angel with your location details, and advise to contact the authorities.</string>
     <string name="set_timer_button">Set Immobile Timer</string>
     <string name="title_activity_immobile_timer">ImmobileTimer</string>
+
 
 
 

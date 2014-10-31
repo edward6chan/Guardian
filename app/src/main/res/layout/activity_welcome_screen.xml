@@ -2,8 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/guardian_white"
-    tools:context=".WelcomeScreen">
+    tools:context=".WelcomeScreen"
+    android:background="@color/guardian_white">
+
 
     <LinearLayout
         android:id="@+id/welcome_screen_header"
@@ -14,61 +15,41 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/welcome_to_guardian"
-            android:textColor="@color/guardian_white"
-            android:textSize="@dimen/text_header" />
+            style="@style/TitleSetupText"
+            android:layout_below="@id/welcome_screen_header"
+            android:text="@string/welcome_to_guardian" />
     </LinearLayout>
 
     <TextView
+        style="@style/SetupText"
         android:id="@+id/Welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_below="@id/welcome_screen_header"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:padding="@dimen/text_padding_instructions"
         android:text="@string/welcome_message"
-        android:textColor="@color/guardian_black"
-        android:textSize="@dimen/text_instructions_large" />
+        android:textSize="@dimen/text_instructions_large"
+        android:paddingTop="@dimen/text_padding_instructions"
+        android:paddingBottom="@dimen/text_padding_instructions"/>
 
     <ImageView
+        style="@style/SetupImage"
         android:id="@+id/image_welcome"
-        android:layout_width="180dp"
-        android:layout_centerInParent="true"
-        android:layout_height="180dp"
         android:layout_below="@id/Welcome"
-        android:scaleType="centerInside"
         android:src="@drawable/image_welcome"/>
 
     <TextView
+        style="@style/SetupText"
         android:id="@+id/Welcome2"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/image_welcome"
-        android:paddingLeft="@dimen/text_padding_instructions"
-        android:paddingRight="@dimen/text_padding_instructions"
-        android:paddingBottom="10dp"
+        android:paddingBottom="20dp"
         android:paddingTop="20dp"
         android:text="@string/welcome_message_two"
-        android:textColor="@color/guardian_black"
-        android:textSize="@dimen/text_instructions_large" />
+        android:textSize="@dimen/text_instructions_large"
+/>
 
     <Button
-        android:id="@+id/NextButton"
-        android:background="@color/guardian_blue"
-        android:layout_below="@id/Welcome2"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="@dimen/button_padding_instructions"
-        android:layout_marginTop="20dp"
-        android:onClick="nextButton"
-        android:text="@string/nextButton"
-        android:textStyle="bold|normal"
-        android:textSize="@dimen/button_text_size"
-        android:textColor="@color/guardian_white"/>
+        style="@style/NextButton"
+        android:id="@+id/NextButton_1"
+
+
+
+        />
 </RelativeLayout>

@@ -26,20 +26,24 @@
         </activity>
         <activity
             android:name=".SetUpEmergencyPlan"
-            android:label="@string/title_activity_set_up_emergency_plan" >
-        </activity>
+            android:label="@string/title_activity_set_up_emergency_plan"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
 
+        </activity>
         <activity
             android:name=".ManageGuardian"
             android:label="@string/title_activity_manage_guardian" >
         </activity>
         <activity
             android:name=".ImmobileTimerScreenOne"
-            android:label="@string/title_activity_immobile_timer_screen_one" >
+            android:label="@string/title_activity_immobile_timer_screen_one"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
+
         </activity>
         <activity
             android:name=".ImmobileTimerScreenTwo"
-            android:label="@string/title_activity_immobile_timer_screen_two" >
+            android:label="@string/title_activity_immobile_timer_screen_two"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.SET_TIMER" />
 
@@ -48,7 +52,8 @@
         </activity>
         <activity
             android:name=".ImmobileTimer"
-            android:label="@string/title_activity_immobile_timer" >
+            android:label="@string/title_activity_immobile_timer"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
         </activity>
 
         <activity android:name=".SplashScreen"

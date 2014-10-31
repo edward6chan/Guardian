@@ -3,6 +3,58 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+    <!-- <item name="android:background">@color/guardian_white</item>-->
+</style>
+<!--<style name="SetupTheme" parent="android:style/Theme.Black.NoTitleBar">
+    &lt;!&ndash; Customize your theme here. &ndash;&gt;
+    <item name="android:background">@color/guardian_white</item>
+</style>-->
+
+    <style name="NextButton" >
+
+        <item name="android:text">@string/nextButton</item>
+        <item name="android:background">@color/guardian_blue</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginLeft">@dimen/button_padding_instructions</item>
+        <item name="android:layout_marginTop">480dp</item>
+        <item name="android:onClick">nextButton</item>
+        <item name="android:textStyle">bold|normal</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
+        <item name="android:textColor">@color/guardian_white</item>
+
+
+
+
+    </style>
+    <style name ="SetupText">
+        <item name="android:textColor">@color/guardian_black</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingRight">@dimen/text_padding_instructions</item>
+        <item name="android:paddingLeft">@dimen/text_padding_instructions</item>
+    </style>
+
+    <style name ="TitleSetupText">
+        <item name="android:textColor">@color/guardian_white</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/text_header</item>
+    </style>
+
+    <style name ="SetupImage">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+
     </style>
 
 </resources>
