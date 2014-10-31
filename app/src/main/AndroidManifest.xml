@@ -61,6 +61,10 @@
             android:name=".ConfirmAngel"
             android:label="@string/title_activity_confirm_angel" >
         </activity>
+        <activity
+            android:name=".SendTextToAngel"
+            android:label="@string/title_activity_send_text_to_angel" >
+        </activity>
     </application>
 
 </manifest>

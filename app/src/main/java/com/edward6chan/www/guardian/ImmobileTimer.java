@@ -23,7 +23,7 @@ public class ImmobileTimer extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_immobile_timer);
 
-        mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERNCES", MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERENCES", MODE_PRIVATE);
 
         String timeSaved = mSharedPreferences.getString("TIMER", null);
         if(timeSaved!=null) {

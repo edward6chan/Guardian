@@ -43,7 +43,7 @@
         style="@style/SetupImage"
         android:id="@+id/image_setupAngel"
         android:layout_below="@id/guardian_name"
-        android:paddingTop="10dp"
+        android:paddingTop="7.5dp"
         android:paddingBottom="35dp"
         android:src="@drawable/assign_angel"/>
 

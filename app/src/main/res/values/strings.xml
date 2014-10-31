@@ -22,5 +22,8 @@
     <string name="set_timer_button">Set Immobile Timer</string>
     <string name="title_activity_immobile_timer">ImmobileTimer</string>
     <string name="title_activity_confirm_angel">ConfirmAngel</string>
+    <string name="title_activity_send_text_to_angel">SendTextToAngel</string>
+    <string name="predefined_text_message">Congrulations! You have been assigned as my Angel when I use the Guardian application. </string>
+    <string name="send_text_message_button">Send Message to Angel</string>
 
 </resources>
