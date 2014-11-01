@@ -49,6 +49,7 @@
         style="@style/NextButton"
         android:onClick="nextButton"
         android:id="@+id/NextButton_1"
+        android:layout_below="@id/Welcome2"
 
 
 

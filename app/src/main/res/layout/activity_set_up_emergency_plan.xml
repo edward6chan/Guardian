@@ -25,7 +25,7 @@
         android:id="@+id/emer_msg_Title"
         android:layout_below="@id/setup_screen_header"
         android:text="@string/set_up_emer_msg_title"
-        android:textSize="35dp"
+        android:textSize="@dimen/text_instructions_large"
         android:paddingTop="@dimen/text_padding_instructions"
         android:paddingBottom="@dimen/text_padding_instructions"
 
@@ -36,20 +36,24 @@
         android:text="@string/set_up_emer_msg"
         android:id="@+id/guardian_name"
         android:layout_below="@+id/emer_msg_Title"
-        android:textSize="24dp"
-        android:paddingBottom="15dp"/>
+        android:textSize="@dimen/text_instructions_large"
+        android:paddingBottom="@dimen/text_padding_instructions"/>
 
     <ImageView
         style="@style/SetupImage"
         android:id="@+id/image_setupAngel"
         android:layout_below="@id/guardian_name"
-        android:paddingTop="7.5dp"
-        android:paddingBottom="35dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="20dp"
         android:src="@drawable/assign_angel"/>
+    <!--android:layout_width="wrap_content"
+    <!-android:layout_height="230dp"-->
 
-    <Button
-        style="@style/NextButton"
-        android:text="@string/assign_angel_button_text"
-        android:id="@+id/button"
-        android:onClick="pickContact" />
-</RelativeLayout>
+
+        <Button
+            style="@style/NextButton"
+            android:text="@string/assign_angel_button_text"
+            android:id="@+id/button"
+            android:onClick="pickContact"
+            android:layout_below="@id/image_setupAngel"/>
+    </RelativeLayout>
