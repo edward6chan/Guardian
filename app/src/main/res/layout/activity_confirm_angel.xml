@@ -68,7 +68,7 @@ android:background="@color/guardian_white"
         android:orientation="horizontal"
         android:layout_below="@id/confirmAngel_tv2">
     <Button
-        android:onClick="nextButton"
+        android:onClick="cancelAngelButton"
         android:id="@+id/button_cancel"
         android:text="Cancel"
         android:background="@color/guardian_white"
@@ -78,7 +78,7 @@ android:background="@color/guardian_white"
         android:layout_marginLeft="@dimen/button_padding_instructions"
         android:textStyle="bold|normal"
         android:textSize="@dimen/button_text_size"
-        android:textColor="@color/guardian_blue"/>
+        android:textColor="@color/guardian_blue" />
 
     />
 
