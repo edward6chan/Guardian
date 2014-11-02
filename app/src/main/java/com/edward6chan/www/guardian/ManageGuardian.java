@@ -21,6 +21,7 @@ public class ManageGuardian extends Activity {
 
         String phoneNumber = mSharedPreferences.getString("guardian_phone_number", null);
 
+
         //Bundle extras = getIntent().getExtras();
         //if (extras != null) {
 

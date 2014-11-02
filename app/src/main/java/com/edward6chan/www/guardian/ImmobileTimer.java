@@ -26,6 +26,8 @@ public class ImmobileTimer extends Activity {
 
         mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERENCES", MODE_PRIVATE);
 
+        displayTimer = (TextView) findViewById(R.id.test_timer);
+
         String timeSaved = mSharedPreferences.getString("TIMER", null);
         if(timeSaved!=null) {
             displayTimer.setText(timeSaved);
