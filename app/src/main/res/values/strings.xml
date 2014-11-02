@@ -17,7 +17,7 @@
     <string name="title_activity_manage_guardian">ManageGuardian</string>
     <string name="title_activity_immobile_timer_screen_one">ImmobileTimerScreenOne</string>
     <string name="title_activity_immobile_timer_screen_two">ImmobileTimerScreenTwo</string>
-    <string name="immobile_timer_message_one">Your Default Immobile Timer is what will count down and trigger Guardian to contact your Angel when you become immobile for a designated amount of time.</string>
+    <string name="immobile_timer_message_one">If you remain immobile, and the timer counts down to 0:00, Guardian will ask if you are okay on your Pebble Watch.</string>
     <string name="immobile_timer_message_two">If you do not respond to the notification. Guardian will alert your Angel with your location details, and advise to contact the authorities.</string>
     <string name="set_timer_button">Set Immobile Timer</string>
     <string name="title_activity_immobile_timer">ImmobileTimer</string>
@@ -29,8 +29,9 @@
     <string name="confirm_angel_header">Confirm Angel</string>
     <string name="confirm_angel_tv1">You have chosen</string>
     <string name="confirm_angel_tv2">as your Angel.</string>
-    <string name="send_text_header">Message Angel</string>
+    <string name="send_text_header">Send Text to Your Angel</string>
     <string name="send_text_tv">Notify your Angel of their special role in your life. </string>
     <string name="pick_time">Pick Time</string>
-    <string name="immobile_timer1_title">Set Default Immobile Timer</string>
+    <string name="step_counter">android.hardware.sensor.stepcounter</string>
+    <string name="step_detector">android.hardware.sensor.stepdetector </string>
 </resources>

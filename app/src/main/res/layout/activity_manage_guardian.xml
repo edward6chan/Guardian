@@ -30,4 +30,13 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/stepCount"
+        android:layout_above="@+id/guardian_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="86dp" />
+
 </RelativeLayout>
