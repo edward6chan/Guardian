@@ -8,12 +8,13 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.edward6chan.www.guardian.ImmobileTimer">
 
-    <EditText
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="time"
         android:ems="10"
-        android:id="@+id/timer_input"
+        android:text="@string/pick_time"
+        android:onClick="handleTimePicker"
+        android:id="@+id/button_timer_picker"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
@@ -23,7 +24,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
         android:id="@+id/textView"
-        android:layout_above="@+id/timer_input"
+        android:layout_above="@+id/button_timer_picker"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="64dp" />
 

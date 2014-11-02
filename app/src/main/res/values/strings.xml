@@ -31,5 +31,5 @@
     <string name="confirm_angel_tv2">as your Angel.</string>
     <string name="send_text_header">Send Text to Your Angel</string>
     <string name="send_text_tv">Notify your Angel of their special role in your life. </string>
-
+    <string name="pick_time">Pick Time</string>
 </resources>

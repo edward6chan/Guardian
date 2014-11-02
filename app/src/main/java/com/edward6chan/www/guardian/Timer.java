@@ -18,13 +18,14 @@ public class Timer extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_timer);
 
         mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERENCES", MODE_PRIVATE);
         String seconds = mSharedPreferences.getString("TIMER", null);
         int secondsInt = Integer.parseInt(seconds);
 
-        secondsInt = secondsInt * 1000 * 60;
+        secondsInt = secondsInt * 1000;
 
         textView1 = (TextView) findViewById(R.id.textView1);
 

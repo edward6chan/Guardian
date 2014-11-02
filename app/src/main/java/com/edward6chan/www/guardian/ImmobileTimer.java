@@ -1,22 +1,24 @@
 package com.edward6chan.www.guardian;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
+import com.doomonafireball.betterpickers.hmspicker.HmsPickerBuilder;
+import com.doomonafireball.betterpickers.hmspicker.HmsPickerDialogFragment;
 
-public class ImmobileTimer extends Activity {
 
-    private EditText setTimer;
-    private int minutes;
+public class ImmobileTimer extends FragmentActivity implements HmsPickerDialogFragment.HmsPickerDialogHandler {
+
+    private int seconds;
     private TextView displayTimer;
+    private Button bTimePicker;
     private SharedPreferences mSharedPreferences;
 
     @Override
@@ -27,11 +29,20 @@ public class ImmobileTimer extends Activity {
         mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERENCES", MODE_PRIVATE);
 
         displayTimer = (TextView) findViewById(R.id.test_timer);
+        bTimePicker = (Button) findViewById(R.id.button_timer_picker);
 
         String timeSaved = mSharedPreferences.getString("TIMER", null);
-        if(timeSaved!=null) {
+        if (timeSaved != null) {
             displayTimer.setText(timeSaved);
         }
+
+    }
+
+    public void handleTimePicker(View v) {
+        HmsPickerBuilder hmsPickerBuilder = new HmsPickerBuilder()
+                .setFragmentManager(getSupportFragmentManager())
+                .setStyleResId(R.style.BetterPickersDialogFragment);
+        hmsPickerBuilder.show();
 
     }
 
@@ -55,18 +66,17 @@ public class ImmobileTimer extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void nextButton (View v) {
+    public void nextButton(View v) {
 
-        Button button = (Button) v;
-        setTimer = (EditText) findViewById(R.id.timer_input);
-        displayTimer = (TextView) findViewById(R.id.test_timer);
-        minutes = Integer.parseInt(setTimer.getText().toString());
-        displayTimer.setText(""+ minutes);
-
-        mSharedPreferences.edit().putString("TIMER", minutes + "").commit();
-
-
+        mSharedPreferences.edit().putString("TIMER", seconds + "").commit();
         Intent i = new Intent(ImmobileTimer.this, Timer.class);
         ImmobileTimer.this.startActivity(i);
+    }
+
+
+    @Override
+    public void onDialogHmsSet(int i, int hour, int minute, int second) {
+        displayTimer.setText("0" + hour + ":" + minute + ":" + second);
+        seconds = hour*60*60 + minute*60 + second;
     }
 }
