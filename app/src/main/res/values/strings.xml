@@ -32,4 +32,6 @@
     <string name="send_text_header">Send Text to Your Angel</string>
     <string name="send_text_tv">Notify your Angel of their special role in your life. </string>
     <string name="pick_time">Pick Time</string>
+    <string name="step_counter">android.hardware.sensor.stepcounter</string>
+    <string name="step_detector">android.hardware.sensor.stepdetector </string>
 </resources>
