@@ -45,4 +45,5 @@
         android:id="@+id/test_timer"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

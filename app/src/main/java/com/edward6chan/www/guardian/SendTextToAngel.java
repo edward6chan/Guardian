@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.EditText;
 
 
@@ -54,7 +55,8 @@ public class SendTextToAngel extends Activity {
 
     public void sendTextMessageButton (View v) {
 
-        Button button = (Button) v;
+
+        ImageButton button = (ImageButton) v;
 
         text_message = (EditText) findViewById(R.id.TextMessage);
         text = text_message.getText().toString();

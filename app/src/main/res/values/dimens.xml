@@ -8,4 +8,6 @@
     <dimen name="text_instructions_large">25dp</dimen>
     <dimen name="text_padding_instructions">20dp</dimen>
     <dimen name="button_padding_instructions">35dp</dimen>
+    <dimen name="numpad_text_size">48dp</dimen>
+    <dimen name="timer_text_size">60dp</dimen>
 </resources>

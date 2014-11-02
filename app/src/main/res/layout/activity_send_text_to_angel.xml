@@ -11,14 +11,30 @@ android:background="@color/guardian_white">
     android:layout_width="match_parent"
     android:layout_height="@dimen/header_height"
     android:background="@color/guardian_blue"
+    android:orientation="horizontal"
     android:gravity="center"
-    android:orientation="horizontal">
+    >
 
     <TextView
         style="@style/TitleSetupText"
-        android:layout_below="@id/send_text_header"
-        android:text="@string/send_text_header" />
+        android:id="@+id/title_header"
+        android:layout_height="@dimen/header_height"
+        android:text="@string/send_text_header"/>
+
 </LinearLayout>
+    <ImageButton
+        android:id="@+id/send_message_to_angel"
+        android:background="@color/guardian_blue"
+        android:layout_alignRight="@id/send_text_header"
+        android:gravity="top|right"
+        android:layout_gravity="top|right"
+        android:paddingRight="20dp"
+        android:layout_height="@dimen/header_height"
+        android:layout_width="wrap_content"
+        android:onClick="sendTextMessageButton"
+        android:src="@drawable/ic_action_send"
+        />
+
 
 <TextView
     style="@style/SetupText"
@@ -47,13 +63,7 @@ android:background="@color/guardian_white">
     android:text="@string/predefined_text_message" />
 
 
-    <Button
-        style="@style/NextButton"
-        android:text="@string/send_text_message_button"
-        android:id="@+id/send_message_to_angel"
-        android:layout_below="@id/TextMessage"
-        android:onClick="sendTextMessageButton"
-        android:layout_marginTop="20dp"/>
+
 
 </RelativeLayout>
 
