@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.getpebble.android.kit.Constants;
 import com.getpebble.android.kit.PebbleKit;
@@ -73,6 +74,7 @@ public class SetUpEmergencyPlan extends Activity {
                     if (cursor.moveToFirst()) {
                         String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                         phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
 
                         Intent i = new Intent(this, ConfirmAngel.class);
                         Bundle guardian_info = new Bundle();

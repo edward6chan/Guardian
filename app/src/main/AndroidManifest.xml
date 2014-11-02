@@ -59,15 +59,18 @@
         </activity>
         <activity
             android:name=".ConfirmAngel"
-            android:label="@string/title_activity_confirm_angel" >
+            android:label="@string/title_activity_confirm_angel"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
         </activity>
         <activity
             android:name=".SendTextToAngel"
-            android:label="@string/title_activity_send_text_to_angel" >
+            android:label="@string/title_activity_send_text_to_angel"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
         </activity>
         <activity
             android:name=".Timer"
-            android:label="@string/title_activity_timer" >
+            android:label="@string/title_activity_timer"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
         </activity>
     </application>
 

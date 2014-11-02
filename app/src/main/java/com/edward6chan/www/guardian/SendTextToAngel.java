@@ -8,10 +8,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 
 public class SendTextToAngel extends Activity {
     String name, phoneNumber;
+    private EditText text_message;
+    private String text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,10 @@ public class SendTextToAngel extends Activity {
 
         Button button = (Button) v;
 
-        sendSMS(phoneNumber, "Hi You got a message!");
+        text_message = (EditText) findViewById(R.id.TextMessage);
+        text = text_message.getText().toString();
+
+        sendSMS(phoneNumber, text);
 
         Intent i = new Intent(SendTextToAngel.this, ImmobileTimerScreenOne.class);
         SendTextToAngel.this.startActivity(i);
