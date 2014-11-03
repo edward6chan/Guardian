@@ -7,28 +7,129 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.edward6chan.www.guardian.ManageGuardian">
+ <TextView
+   android:layout_width="wrap_content"
+   android:layout_height="wrap_content"
+   android:text="Current Status"
+   android:id="@+id/current_status_header"
+   android:textSize="18dp"
+   android:textStyle="bold"
+   android:gravity="center_vertical"
+        />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/toggle"
+    android:paddingBottom="20dp"
+    android:layout_below="@id/current_status_header">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TOGGLE"
+        android:id="@+id/toggle_active_inactive"
+        android:textSize="40dp"
+        android:gravity="center_vertical"
+    />
+</LinearLayout>
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:id="@+id/switch_status"
+        android:checked="false"
+        android:layout_alignRight="@id/toggle"
+        android:layout_below="@id/current_status_header"
+        android:paddingRight="20dp"
+        android:layout_gravity="center_vertical"
+    />
+<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Angel"
+        android:id="@+id/current_angel_header"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:layout_below="@id/toggle"
+        />
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/angel_contact"
+        android:layout_below="@id/current_angel_header"
+        android:paddingBottom="0dp"
+        >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Angel"
+        android:id="@+id/angel_name"
+        android:textSize="36dp"
+    />
+</LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/guardian_name"
-        android:textSize="36dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:text="Phone Number"
+        android:id="@+id/angel_phone_number"
+        android:textSize="20dp"
+        android:paddingBottom="20dp"
+        android:layout_below="@+id/angel_contact"
+        />
 
+    <ImageButton
+        android:id="@+id/edit_angel"
+        android:src="@drawable/ic_action_edit"
+        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_alignRight="@id/angel_contact"
+        android:layout_below="@id/current_angel_header"
+        android:paddingRight="20dp"
+        android:paddingLeft="10dp"
+        android:background="@color/guardian_white"
+        />
+     />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/guardian_phone_number"
+        android:text="Immobile Timer"
+        android:id="@+id/current_timer_header"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:layout_below="@id/angel_phone_number"
+        android:paddingBottom="10dp"
+        />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/timer"
+    android:layout_below="@id/current_timer_header"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Timer"
+        android:id="@+id/timer_set"
         android:textSize="36dp"
-        android:layout_below="@+id/guardian_name"
-        android:layout_marginTop="49dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/current_timer_header"
+        android:gravity="center_vertical"
+
+    />
+</LinearLayout>
+
+    <ImageButton
+        android:id="@+id/edit_timer"
+        android:src="@drawable/ic_action_edit"
+        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_alignRight="@id/timer"
+        android:layout_below="@id/current_timer_header"
+        android:paddingRight="20dp"
+        android:paddingLeft="10dp"
+        android:background="@color/guardian_white"
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -38,5 +139,4 @@
         android:layout_above="@+id/guardian_name"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="86dp" />
-
 </RelativeLayout>
