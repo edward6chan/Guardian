@@ -133,18 +133,19 @@ public class ManageGuardian extends Activity implements SensorEventListener {
     public void onSwitchClick(View v){
 
         Button button = (Button) v;
+        Boolean active = false;
 
         mToggleSwitch = (TextView) findViewById(R.id.toggle_active_inactive);
         String active_inactive = mToggleSwitch.getText().toString();
 
         if (active_inactive == "ACTIVE") {
             mToggleSwitch.setText("INACTIVE");
-            Boolean active = false;
+            active = false;
 
         }
         else {
             mToggleSwitch.setText("ACTIVE");
-            Boolean active = true;
+            active = true;
         }
     }
 }
