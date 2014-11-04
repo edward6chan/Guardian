@@ -147,12 +147,12 @@ public class ManageGuardian extends Activity implements SensorEventListener {
             mStep++;
             isMoving = true;
         }
-        //else {
-        //    isMoving = false;
-        //}
+        else if (event.values[0] != 0.0f){
+            isMoving = false;
+        }
 
-        //mTextView.setText(Integer.toString(mStep));
-        mTextView.setText(Boolean.toString(isMoving));
+        mTextView.setText(Integer.toString(mStep));
+        //mTextView.setText(Boolean.toString(isMoving));
         }
     /*
     public int getSteps(){
