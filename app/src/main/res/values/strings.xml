@@ -23,7 +23,8 @@
     <string name="title_activity_immobile_timer">ImmobileTimer</string>
     <string name="title_activity_confirm_angel">ConfirmAngel</string>
     <string name="title_activity_send_text_to_angel">SendTextToAngel</string>
-    <string name="predefined_text_message">Congratulations! You have been assigned as my Angel when I use the Guardian application. You will be alerted with my location, if I become immobile and unresponsive. Thanks for helping to keep me safe!</string>
+    <string name="predefined_text_message">Congratulations! You have been assigned as my Angel when I use the Guardian application.</string>
+    <!--You will be alerted with my location, if I become immobile and unresponsive. Thanks for helping to keep me safe!</string> -->
     <string name="send_text_message_button">Message Angel</string>
     <string name="title_activity_timer">Timer</string>
     <string name="confirm_angel_header">Confirm Angel</string>
