@@ -5,21 +5,7 @@
     tools:context="com.edward6chan.www.guardian.ManageGuardian"
     android:background="@color/guardian_white"
     >
-<LinearLayout
-        android:id="@+id/manage_guardian_header"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/header_height"
-        android:background="@color/guardian_blue"
-        android:orientation="horizontal"
-        android:gravity="center"
-        >
 
-       <TextView
-            style="@style/TitleSetupText"
-            android:id="@+id/title_header"
-            android:layout_height="@dimen/header_height"
-            android:text="@string/manage_guardian_header"/>
- </LinearLayout>
     <ImageView
         android:id="@+id/guardian_logo_black"
         android:layout_width="wrap_content"
@@ -28,7 +14,7 @@
         android:paddingBottom="30dp"
         android:paddingTop="20dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/manage_guardian_header"
+
         />
  <TextView
    android:layout_width="wrap_content"
@@ -145,6 +131,7 @@
         android:paddingRight="20dp"
         android:paddingLeft="10dp"
         android:background="@color/guardian_white"
+        android:onClick="onEditAngelClick"
 
         />
 
@@ -212,6 +199,6 @@
         android:id="@+id/stepCount"
         android:layout_below="@+id/edit_timer"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="86dp"
+        android:layout_marginBottom="100dp"
         android:textColor="@color/guardian_black"/>
 </RelativeLayout>

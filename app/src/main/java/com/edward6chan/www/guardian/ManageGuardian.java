@@ -22,13 +22,13 @@ public class ManageGuardian extends Activity implements SensorEventListener {
 
     private TextView textView;
     private TextView mToggleSwitch;
-    private TextView mTimer;
+
 
     //Sensor stuff
     private SensorManager mSensorManager;
     private Sensor mStepSensor;
     //private SensorEventListener mSensorEventListener = null;
-    private TextView mTextView;
+    private TextView mTextView, mTimer_Set;
     private int mStep;
     private boolean isMoving = false;
 
@@ -39,15 +39,17 @@ public class ManageGuardian extends Activity implements SensorEventListener {
         setContentView(R.layout.activity_manage_guardian);
         textView = (TextView) findViewById(R.id.stepCount);
 
-
-
+        //getting shared preferences file
         mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERENCES", MODE_PRIVATE);
+
+        //getting angel contact name from shared preferences file
         String name = mSharedPreferences.getString("ANGEL_NAME", null);
 
+        //getting angel contact number from shared preferences file
         String phoneNumber = mSharedPreferences.getString("guardian_phone_number", null);
 
-        String timeSaved = mSharedPreferences.getString("TIMER",null);
-
+        //getting saved time from shared preferences file
+        String seconds = mSharedPreferences.getString("TIMER", null);
 
         //Bundle extras = getIntent().getExtras();
         //if (extras != null) {
@@ -60,13 +62,11 @@ public class ManageGuardian extends Activity implements SensorEventListener {
             tv = (TextView)findViewById(R.id.angel_phone_number);
             tv.setText(phoneNumber);
 
-            //pulling time saved from saved preferences (
-            // !!need to fix to display correctly as 0:00:00
-            mTimer = (TextView) findViewById(R.id.timer_set);
-            if (timeSaved != null) {
-                mTimer.setText(timeSaved);
-            }
-
+            //creating timer and displaying timer to correct textview
+            mTimer_Set = (TextView) findViewById(R.id.timer_set);
+            int secondsInt = Integer.parseInt(seconds);
+            secondsInt = secondsInt * 1000;
+            MyCountdownTimer counter = new MyCountdownTimer(secondsInt, 1000, mTimer_Set);
         //}
 
         mTextView = (TextView) findViewById(R.id.stepCount);
