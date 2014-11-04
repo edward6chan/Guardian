@@ -32,7 +32,8 @@
         </activity>
         <activity
             android:name=".ManageGuardian"
-            android:label="@string/title_activity_manage_guardian" >
+            android:label="@string/title_activity_manage_guardian"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
         </activity>
         <activity
             android:name=".ImmobileTimerScreenOne"

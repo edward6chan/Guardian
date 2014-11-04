@@ -10,6 +10,9 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 
 
@@ -18,6 +21,8 @@ public class ManageGuardian extends Activity implements SensorEventListener {
     private SharedPreferences mSharedPreferences;
 
     private TextView textView;
+    private TextView mToggleSwitch;
+    private TextView mTimer;
 
     private SensorManager mSensorManager;
     private Sensor mStepCounterSensor;
@@ -29,22 +34,34 @@ public class ManageGuardian extends Activity implements SensorEventListener {
         setContentView(R.layout.activity_manage_guardian);
         textView = (TextView) findViewById(R.id.stepCount);
 
+
+
         mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERENCES", MODE_PRIVATE);
         String name = mSharedPreferences.getString("ANGEL_NAME", null);
 
         String phoneNumber = mSharedPreferences.getString("guardian_phone_number", null);
+
+        String timeSaved = mSharedPreferences.getString("TIMER",null);
 
 
         //Bundle extras = getIntent().getExtras();
         //if (extras != null) {
 
             //pulling name from shared preferences
-            TextView tv = (TextView)findViewById(R.id.guardian_name);
+            TextView tv = (TextView)findViewById(R.id.angel_name);
             tv.setText(name);
 
             //pulling number from shared preferences
-            tv = (TextView)findViewById(R.id.guardian_phone_number);
+            tv = (TextView)findViewById(R.id.angel_phone_number);
             tv.setText(phoneNumber);
+
+            //pulling time saved from saved preferences (
+            // !!need to fix to display correctly as 0:00:00
+            mTimer = (TextView) findViewById(R.id.timer_set);
+            if (timeSaved != null) {
+                mTimer.setText(timeSaved);
+            }
+
         //}
 
 
@@ -111,5 +128,23 @@ public class ManageGuardian extends Activity implements SensorEventListener {
             // For test only. Only allowed value is 1.0 i.e. for step taken
             textView.setText("Step Detector Detected : " + value);
         }*/
+    }
+
+    public void onSwitchClick(View v){
+
+        Button button = (Button) v;
+
+        mToggleSwitch = (TextView) findViewById(R.id.toggle_active_inactive);
+        String active_inactive = mToggleSwitch.getText().toString();
+
+        if (active_inactive == "ACTIVE") {
+            mToggleSwitch.setText("INACTIVE");
+            Boolean active = false;
+
+        }
+        else {
+            mToggleSwitch.setText("ACTIVE");
+            Boolean active = true;
+        }
     }
 }

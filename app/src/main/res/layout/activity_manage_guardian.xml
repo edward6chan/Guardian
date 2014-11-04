@@ -2,11 +2,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.edward6chan.www.guardian.ManageGuardian">
+    tools:context="com.edward6chan.www.guardian.ManageGuardian"
+    android:background="@color/guardian_white"
+    >
+<LinearLayout
+        android:id="@+id/manage_guardian_header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_height"
+        android:background="@color/guardian_blue"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+       <TextView
+            style="@style/TitleSetupText"
+            android:id="@+id/title_header"
+            android:layout_height="@dimen/header_height"
+            android:text="@string/manage_guardian_header"/>
+ </LinearLayout>
+    <ImageView
+        android:id="@+id/guardian_logo_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/guardian_logo_black"
+        android:paddingBottom="30dp"
+        android:paddingTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/manage_guardian_header"
+        />
  <TextView
    android:layout_width="wrap_content"
    android:layout_height="wrap_content"
@@ -15,33 +38,50 @@
    android:textSize="18dp"
    android:textStyle="bold"
    android:gravity="center_vertical"
+   android:layout_below="@id/guardian_logo_black"
+   android:textColor="@color/guardian_black"
+   android:paddingLeft="@dimen/activity_horizontal_margin"
+
+        />
+    <ImageView
+        android:id="@+id/light_line_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_devider_light"
+        android:paddingBottom="0dp"
+        android:paddingTop="0dp"
+        android:layout_below="@id/current_status_header"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
         />
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/toggle"
     android:paddingBottom="20dp"
-    android:layout_below="@id/current_status_header">
+    android:layout_below="@id/light_line_status">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TOGGLE"
+        android:text="INACTIVE"
         android:id="@+id/toggle_active_inactive"
         android:textSize="40dp"
         android:gravity="center_vertical"
+        android:textColor="@color/guardian_blue"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
     />
 </LinearLayout>
 
     <Switch
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:id="@+id/switch_status"
         android:checked="false"
         android:layout_alignRight="@id/toggle"
-        android:layout_below="@id/current_status_header"
+        android:layout_below="@id/light_line_status"
         android:paddingRight="20dp"
         android:layout_gravity="center_vertical"
-    />
+        android:visibility="visible"
+        android:onClick="onSwitchClick"/>
 <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,12 +91,25 @@
         android:textStyle="bold"
         android:gravity="center_vertical"
         android:layout_below="@id/toggle"
+        android:textColor="@color/guardian_black"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+        />
+    <ImageView
+        android:id="@+id/light_line_angel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_devider_light"
+        android:paddingBottom="0dp"
+        android:paddingTop="0dp"
+        android:layout_below="@id/current_angel_header"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+
         />
 <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/angel_contact"
-        android:layout_below="@id/current_angel_header"
+        android:layout_below="@id/light_line_angel"
         android:paddingBottom="0dp"
         >
     <TextView
@@ -64,7 +117,9 @@
         android:layout_height="wrap_content"
         android:text="Angel"
         android:id="@+id/angel_name"
-        android:textSize="36dp"
+        android:textSize="25dp"
+        android:textColor="@color/guardian_black"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
     />
 </LinearLayout>
 
@@ -73,23 +128,26 @@
         android:layout_height="wrap_content"
         android:text="Phone Number"
         android:id="@+id/angel_phone_number"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:paddingBottom="20dp"
         android:layout_below="@+id/angel_contact"
+        android:textColor="@color/guardian_black"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
         />
 
     <ImageButton
         android:id="@+id/edit_angel"
         android:src="@drawable/ic_action_edit"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_width="wrap_content"
         android:layout_alignRight="@id/angel_contact"
-        android:layout_below="@id/current_angel_header"
+        android:layout_below="@id/light_line_angel"
         android:paddingRight="20dp"
         android:paddingLeft="10dp"
         android:background="@color/guardian_white"
+
         />
-     />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -99,22 +157,37 @@
         android:textStyle="bold"
         android:gravity="center_vertical"
         android:layout_below="@id/angel_phone_number"
-        android:paddingBottom="10dp"
+        android:paddingBottom="0dp"
+        android:textColor="@color/guardian_black"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        />
+    <ImageView
+        android:id="@+id/light_line_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_devider_light"
+        android:paddingBottom="0dp"
+        android:paddingTop="0dp"
+        android:layout_below="@id/current_timer_header"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+
         />
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/timer"
-    android:layout_below="@id/current_timer_header"
+    android:layout_below="@id/light_line_timer"
     >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="Timer"
         android:id="@+id/timer_set"
-        android:textSize="36dp"
-        android:layout_below="@+id/current_timer_header"
+        android:textSize="40dp"
+        android:layout_below="@+id/light_line_timer"
         android:gravity="center_vertical"
+        android:textColor="@color/guardian_black"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
 
     />
 </LinearLayout>
@@ -122,13 +195,14 @@
     <ImageButton
         android:id="@+id/edit_timer"
         android:src="@drawable/ic_action_edit"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_width="wrap_content"
         android:layout_alignRight="@id/timer"
-        android:layout_below="@id/current_timer_header"
+        android:layout_below="@id/light_line_timer"
         android:paddingRight="20dp"
         android:paddingLeft="10dp"
         android:background="@color/guardian_white"
+
         />
 
     <TextView
@@ -136,7 +210,8 @@
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/stepCount"
-        android:layout_above="@+id/guardian_name"
+        android:layout_below="@+id/edit_timer"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="86dp" />
+        android:layout_marginBottom="86dp"
+        android:textColor="@color/guardian_black"/>
 </RelativeLayout>

@@ -35,4 +35,5 @@
     <string name="step_counter">android.hardware.sensor.stepcounter</string>
     <string name="step_detector">android.hardware.sensor.stepdetector </string>
     <string name="immobile_timer1_title">Set Default Immobile Timer></string>
+    <string name="manage_guardian_header">Manage Guardian</string>
 </resources>
