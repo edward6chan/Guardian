@@ -27,9 +27,9 @@ public class MyCountdownTimer extends CountDownTimer {
         //Remaining mins: 30 , Remaining secs: 30 seconds
         timer_set=timer;
 
-        String hoursToDisplay = "";
-        String minsToDisplay = "";
-        String secsToDisplay = "";
+        String hoursToDisplay;
+        String minsToDisplay;
+        String secsToDisplay;
 
         total_seconds = millisInFuture / 1000;
         total_mins = (int) total_seconds / 60;
@@ -39,9 +39,14 @@ public class MyCountdownTimer extends CountDownTimer {
 
         remaining_secs = (int) total_seconds - total_mins * 60;
 
-        if (total_hours >= 0 && total_hours <= 9) {
+        hoursToDisplay = total_hours + "";
+        minsToDisplay = remaining_mins + "";
+        secsToDisplay = remaining_secs + "";
+
+
+        /*if (total_hours >= 0 && total_hours <= 9) {
             hoursToDisplay = "0" + total_hours;
-        }
+        }*/
         if (remaining_mins >= 0 && remaining_mins <= 9) {
             minsToDisplay = "0" + remaining_mins;
         }
