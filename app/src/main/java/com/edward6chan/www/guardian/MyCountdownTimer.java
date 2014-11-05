@@ -43,7 +43,7 @@ public class MyCountdownTimer extends CountDownTimer {
         minsToDisplay = remaining_mins + "";
         secsToDisplay = remaining_secs + "";
 
-
+        //not possible to put more than 9 hours on the timer.
         /*if (total_hours >= 0 && total_hours <= 9) {
             hoursToDisplay = "0" + total_hours;
         }*/

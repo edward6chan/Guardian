@@ -189,6 +189,7 @@
         android:paddingRight="20dp"
         android:paddingLeft="10dp"
         android:background="@color/guardian_white"
+        android:onClick="handleTimePicker"
 
         />
 

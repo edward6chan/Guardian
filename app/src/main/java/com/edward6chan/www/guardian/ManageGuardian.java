@@ -8,6 +8,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,8 +16,11 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.doomonafireball.betterpickers.hmspicker.HmsPickerBuilder;
+import com.doomonafireball.betterpickers.hmspicker.HmsPickerDialogFragment;
 
-public class ManageGuardian extends Activity implements SensorEventListener {
+
+public class ManageGuardian extends FragmentActivity implements SensorEventListener, HmsPickerDialogFragment.HmsPickerDialogHandler {
 
     private SharedPreferences mSharedPreferences;
 
@@ -24,12 +28,13 @@ public class ManageGuardian extends Activity implements SensorEventListener {
     private TextView mToggleSwitch;
 
 
+
     //Sensor stuff
     private SensorManager mSensorManager;
     private Sensor mStepSensor;
     //private SensorEventListener mSensorEventListener = null;
     private TextView mTextView, mTimer_Set;
-    private int mStep;
+    private int mStep, seconds;
     private boolean isMoving = false;
 
 
@@ -114,7 +119,35 @@ public class ManageGuardian extends Activity implements SensorEventListener {
     }
 
 
+    public void handleTimePicker(View v) {
+        HmsPickerBuilder hmsPickerBuilder = new HmsPickerBuilder()
+                .setFragmentManager(getSupportFragmentManager())
+                .setStyleResId(R.style.BetterPickersDialogFragment);
+        hmsPickerBuilder.show();
 
+    }
+    @Override
+    public void onDialogHmsSet(int i, int hour, int minute, int second) {
+        String hoursToDisplay = hour + "";
+        String minsToDisplay = minute + "";
+        String secsToDisplay = second + "";
+
+        //not possible to put more than 9 hours on the timer.
+        /*if (total_hours >= 0 && total_hours <= 9) {
+            hoursToDisplay = "0" + total_hours;
+        }*/
+        if (minute >= 0 && minute <= 9) {
+            minsToDisplay = "0" + minute;
+        }
+        if (second >= 0 && second <= 9) {
+            secsToDisplay = "0" + second;
+        }
+
+        mTimer_Set.setText(hoursToDisplay + ":" + minsToDisplay + ":" + secsToDisplay);
+        //mTimer_Set.setText(hour + ":" + minute + ":" + second);
+        seconds = hour*60*60 + minute*60 + second;
+        mSharedPreferences.edit().putString("TIMER", seconds + "").commit();
+    }
 
     public void onSwitchClick(View v){
 
