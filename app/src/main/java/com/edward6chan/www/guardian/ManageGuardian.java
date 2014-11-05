@@ -2,17 +2,22 @@ package com.edward6chan.www.guardian;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -27,6 +32,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
     private TextView textView;
     private TextView mToggleSwitch;
 
+    String name, phoneNumber;
 
 
     //Sensor stuff
@@ -128,25 +134,12 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
     }
     @Override
     public void onDialogHmsSet(int i, int hour, int minute, int second) {
-        String hoursToDisplay = hour + "";
-        String minsToDisplay = minute + "";
-        String secsToDisplay = second + "";
-
-        //not possible to put more than 9 hours on the timer.
-        /*if (total_hours >= 0 && total_hours <= 9) {
-            hoursToDisplay = "0" + total_hours;
-        }*/
-        if (minute >= 0 && minute <= 9) {
-            minsToDisplay = "0" + minute;
-        }
-        if (second >= 0 && second <= 9) {
-            secsToDisplay = "0" + second;
-        }
-
-        mTimer_Set.setText(hoursToDisplay + ":" + minsToDisplay + ":" + secsToDisplay);
-        //mTimer_Set.setText(hour + ":" + minute + ":" + second);
+       
         seconds = hour*60*60 + minute*60 + second;
+        int milliSeconds = seconds*1000;
         mSharedPreferences.edit().putString("TIMER", seconds + "").commit();
+        MyCountdownTimer counter = new MyCountdownTimer(milliSeconds, 1000, mTimer_Set);
+
     }
 
     public void onSwitchClick(View v){
@@ -167,7 +160,53 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
             isActive = true;
         }
     }
+    final int PICK_CONTACT = 1;
 
+    @Override
+    public void onActivityResult(int reqCode, int resultCode, Intent data) {
+        super.onActivityResult(reqCode, resultCode, data);
+
+        switch (reqCode) {
+            case (PICK_CONTACT):
+                if (resultCode == Activity.RESULT_OK) {
+
+                    String[] projection = new String[]{
+                            ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
+                    Uri contacts = data.getData();
+                    Cursor cursor = getContentResolver().query(contacts,
+                            projection, // Which columns to return
+                            null,       // Which rows to return (all rows)
+                            // Selection arguments (with a given ID)
+                            null,
+                            // Put the results in ascending order by name
+                            null);
+                    if (cursor.moveToFirst()) {
+                        name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                        Intent i = new Intent(this, ManageGuardian.class);
+
+                        //Save to shared preferences
+                        mSharedPreferences.edit().putString("ANGEL_NAME", name + "").commit();
+                        mSharedPreferences.edit().putString("guardian_phone_number", phoneNumber + "").commit();
+                        /*Bundle guardian_info = new Bundle();
+                        guardian_info.putString("guardian_name", name);
+                        guardian_info.putString("guardian_phone_number", phoneNumber);
+                        i.putExtras(guardian_info);*/
+                        //i.putExtra("guardian_name", name);
+
+                        ManageGuardian.this.startActivity(i);
+                    }
+                }
+                break;
+        }
+    }
+    public void onEditAngelClick(View v){
+        ImageButton button = (ImageButton) v;
+        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+        startActivityForResult(intent, PICK_CONTACT);
+    }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
