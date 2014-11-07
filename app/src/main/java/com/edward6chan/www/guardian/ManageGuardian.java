@@ -1,8 +1,12 @@
 package com.edward6chan.www.guardian;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.Sensor;
@@ -13,27 +17,50 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.doomonafireball.betterpickers.hmspicker.HmsPickerBuilder;
 import com.doomonafireball.betterpickers.hmspicker.HmsPickerDialogFragment;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.ActivityRecognitionClient;
 
 
-public class ManageGuardian extends FragmentActivity implements SensorEventListener, HmsPickerDialogFragment.HmsPickerDialogHandler {
+public class ManageGuardian extends FragmentActivity implements SensorEventListener, HmsPickerDialogFragment.HmsPickerDialogHandler, GooglePlayServicesClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private SharedPreferences mSharedPreferences;
+    private final String TAG = "ManageGuardian";
 
     private TextView textView;
     private TextView mToggleSwitch;
 
     String name, phoneNumber;
 
+    // Constants that define the activity detection interval
+    public static final int MILLISECONDS_PER_SECOND = 1000;
+    public static final int DETECTION_INTERVAL_SECONDS = 1;
+    public static final int DETECTION_INTERVAL_MILLISECONDS = MILLISECONDS_PER_SECOND * DETECTION_INTERVAL_SECONDS;
+
+    public enum REQUEST_TYPE {START, STOP}
+
+    private REQUEST_TYPE mRequestType;
+
+    /*
+     * Store the PendingIntent used to send activity recognition events
+     * back to the app
+     */
+    private PendingIntent mActivityRecognitionPendingIntent;
+    // Store the current activity recognition client
+    private ActivityRecognitionClient mActivityRecognitionClient;
 
     //Sensor stuff
     private SensorManager mSensorManager;
@@ -42,12 +69,35 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
     private TextView mTextView, mTimer_Set;
     private int mStep, seconds;
     private boolean isMoving = false;
+    private Context mContext;
+
+    // Flag that indicates if a request is underway.
+    private boolean mInProgress;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_guardian);
+
+        mContext = this;
+
+        mActivityRecognitionClient = new ActivityRecognitionClient(mContext, this, this);
+
+        /*
+         * Create the PendingIntent that Location Services uses
+         * to send activity recognition updates back to this app.
+         */
+        Intent intent = new Intent(mContext, ActivityRecognitionIntentService.class);
+
+        /*
+         * Return a PendingIntent that starts the IntentService.
+         */
+        mActivityRecognitionPendingIntent = PendingIntent.getService(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Start with the request flag set to false
+        mInProgress = false;
+
         textView = (TextView) findViewById(R.id.stepCount);
 
         //getting shared preferences file
@@ -65,19 +115,19 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         //Bundle extras = getIntent().getExtras();
         //if (extras != null) {
 
-            //pulling name from shared preferences
-            TextView tv = (TextView)findViewById(R.id.angel_name);
-            tv.setText(name);
+        //pulling name from shared preferences
+        TextView tv = (TextView) findViewById(R.id.angel_name);
+        tv.setText(name);
 
-            //pulling number from shared preferences
-            tv = (TextView)findViewById(R.id.angel_phone_number);
-            tv.setText(phoneNumber);
+        //pulling number from shared preferences
+        tv = (TextView) findViewById(R.id.angel_phone_number);
+        tv.setText(phoneNumber);
 
-            //creating timer and displaying timer to correct textview
-            mTimer_Set = (TextView) findViewById(R.id.timer_set);
-            int secondsInt = Integer.parseInt(seconds);
-            secondsInt = secondsInt * 1000;
-            MyCountdownTimer counter = new MyCountdownTimer(secondsInt, 1000, mTimer_Set);
+        //creating timer and displaying timer to correct textview
+        mTimer_Set = (TextView) findViewById(R.id.timer_set);
+        int secondsInt = Integer.parseInt(seconds);
+        secondsInt = secondsInt * 1000;
+        MyCountdownTimer counter = new MyCountdownTimer(secondsInt, 1000, mTimer_Set);
         //}
 
         mTextView = (TextView) findViewById(R.id.stepCount);
@@ -85,14 +135,15 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mStepSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
-
-
     }
 
+    @Override
     protected void onResume() {
+        Log.i(TAG, "onResume() hit.");
         super.onResume();
-        mSensorManager.registerListener(this, mStepSensor,
-                SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mStepSensor, SensorManager.SENSOR_DELAY_FASTEST);
+
+        startUpdates();
     }
 
     protected void onPause() {
@@ -103,6 +154,12 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
     protected void onStop() {
         super.onPause();
         mSensorManager.unregisterListener(this, mStepSensor);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopUpdates();
     }
 
     @Override
@@ -124,6 +181,189 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+     * LOCATION SERVICES METHODS
+     */
+
+    // Define a DialogFragment that displays the error dialog
+    public static class ErrorDialogFragment extends DialogFragment {
+        // Global field to contain the error dialog
+        private Dialog mDialog;
+
+        // Default constructor. Sets the dialog field to null
+        public ErrorDialogFragment() {
+            super();
+            mDialog = null;
+        }
+
+        // Set the dialog to display
+        public void setDialog(Dialog dialog) {
+            mDialog = dialog;
+        }
+
+        // Return a Dialog to the DialogFragment.
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            return mDialog;
+        }
+    }
+
+    /**
+     * Request activity recognition updates based on the current
+     * detection interval.
+     */
+    public void startUpdates() {
+        Log.i(TAG, "startUpdates() hit.");
+
+        // Set the request type to START
+        mRequestType = REQUEST_TYPE.START;
+        /*
+         * Test for Google Play services after setting the request type.
+         * If Google Play services isn't present, the proper request type
+         * can be restarted.
+         */
+
+        // Check for Google Play services
+        if (!servicesConnected()) {
+            return;
+        }
+        // If a request is not already underway
+        if (!mInProgress) {
+            Log.i(TAG, "Not in progress");
+            // Indicate that a request is in progress
+            mInProgress = true;
+            // Request a connection to Location Services
+            mActivityRecognitionClient.connect();
+            //
+        } else {
+            /*
+             * A request is already underway. You can handle
+             * this situation by disconnecting the client,
+             * re-setting the flag, and then re-trying the
+             * request.
+             */
+        }
+    }
+
+    /**
+     * Turn off activity recognition updates
+     */
+    public void stopUpdates() {
+        Log.i(TAG, "stopUpdates() hit.");
+
+        // Set the request type to STOP
+        mRequestType = REQUEST_TYPE.STOP;
+        /*
+         * Test for Google Play services after setting the request type.
+         * If Google Play services isn't present, the request can be
+         * restarted.
+         */
+        if (!servicesConnected()) {
+            return;
+        }
+        // If a request is not already underway
+        if (!mInProgress) {
+            // Indicate that a request is in progress
+            mInProgress = true;
+            // Request a connection to Location Services
+            mActivityRecognitionClient.connect();
+            //
+        } else {
+            /*
+             * A request is already underway. You can handle
+             * this situation by disconnecting the client,
+             * re-setting the flag, and then re-trying the
+             * request.
+             */
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle dataBundle) {
+        Log.i(TAG, "onConnected() hit.");
+
+        switch (mRequestType) {
+            case START:
+                Log.i(TAG, "Case: START");
+
+                /*
+                 * Request activity recognition updates using the
+                 * preset detection interval and PendingIntent.
+                 * This call is synchronous.
+                 */
+                mActivityRecognitionClient.requestActivityUpdates(DETECTION_INTERVAL_MILLISECONDS, mActivityRecognitionPendingIntent);
+                break;
+
+            case STOP:
+                Log.i(TAG, "Case: STOP");
+
+                mActivityRecognitionClient.removeActivityUpdates(mActivityRecognitionPendingIntent);
+                break;
+                /*
+                 * An enum was added to the definition of REQUEST_TYPE,
+                 * but it doesn't match a known case. Throw an exception.
+                 */
+            default:
+                try {
+                    throw new Exception("Unknown request type in onConnected().");
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception thrown: " + e.getMessage());
+                }
+                break;
+        }
+    }
+
+
+    @Override
+    public void onDisconnected() {
+        Log.i(TAG, "onDisconnected() hit.");
+
+        // Turn off the request flag
+        mInProgress = false;
+        // Delete the client
+        mActivityRecognitionClient = null;
+    }
+
+    // Implementation of OnConnectionFailedListener.onConnectionFailed
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i(TAG, "onConnectionFailed() hit.");
+
+        // Turn off the request flag
+        mInProgress = false;
+        /*
+         * If the error has a resolution, start a Google Play services
+         * activity to resolve it.
+         */
+        if (connectionResult.hasResolution()) {
+            try {
+
+                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+            } catch (IntentSender.SendIntentException e) {
+                // Log the error
+                e.printStackTrace();
+            }
+            // If no resolution is available, display an error dialog
+        } else {
+            // Get the error code
+            int errorCode = connectionResult.getErrorCode();
+            // Get the error dialog from Google Play services
+            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
+                    errorCode,
+                    this,
+                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
+            // If Google Play services can provide an error dialog
+            if (errorDialog != null) {
+                // Create a new DialogFragment for the error dialog
+                ErrorDialogFragment errorFragment =
+                        new ErrorDialogFragment();
+                // Set the dialog in the DialogFragment
+                errorFragment.setDialog(errorDialog);
+                // Show the error dialog in the DialogFragment
+                errorFragment.show(getFragmentManager(), "Activity Recognition");
+            }
+        }
+    }
 
     public void handleTimePicker(View v) {
         HmsPickerBuilder hmsPickerBuilder = new HmsPickerBuilder()
@@ -132,17 +372,21 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         hmsPickerBuilder.show();
 
     }
+
+
+
+
     @Override
     public void onDialogHmsSet(int i, int hour, int minute, int second) {
-       
-        seconds = hour*60*60 + minute*60 + second;
-        int milliSeconds = seconds*1000;
+
+        seconds = hour * 60 * 60 + minute * 60 + second;
+        int milliSeconds = seconds * 1000;
         mSharedPreferences.edit().putString("TIMER", seconds + "").commit();
         MyCountdownTimer counter = new MyCountdownTimer(milliSeconds, 1000, mTimer_Set);
 
     }
 
-    public void onSwitchClick(View v){
+    public void onSwitchClick(View v) {
 
         Button button = (Button) v;
         Boolean isActive = false;
@@ -154,12 +398,12 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
             mToggleSwitch.setText("INACTIVE");
             isActive = false;
 
-        }
-        else {
+        } else {
             mToggleSwitch.setText("ACTIVE");
             isActive = true;
         }
     }
+
     final int PICK_CONTACT = 1;
 
     @Override
@@ -199,14 +443,61 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
                     }
                 }
                 break;
+
+            case CONNECTION_FAILURE_RESOLUTION_REQUEST:
+            /*
+             * If the result code is Activity.RESULT_OK, try
+             * to connect again
+             */
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                    /*
+                     * TODO: TRY REQUEST AGAIN
+                     */
+                        break;
+                }
         }
     }
-    public void onEditAngelClick(View v){
+
+
+    private boolean servicesConnected() {
+        // Check that Google Play services is available
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        // If Google Play services is available
+        if (ConnectionResult.SUCCESS == resultCode) {
+            // In debug mode, log the status
+            Log.d("Activity Recognition", "Google Play services is available.");
+            // Continue
+            return true;
+            // Google Play services was not available for some reason
+        } else {
+            // Get the error dialog from Google Play services
+            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
+                    resultCode,
+                    this,
+                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
+
+            // If Google Play services can provide an error dialog
+            if (errorDialog != null) {
+                // Create a new DialogFragment for the error dialog
+                ErrorDialogFragment errorFragment =
+                        new ErrorDialogFragment();
+                // Set the dialog in the DialogFragment
+                errorFragment.setDialog(errorDialog);
+                // Show the error dialog in the DialogFragment
+                errorFragment.show(getFragmentManager(), "Activity Recognition");
+            }
+            return false;
+        }
+    }
+
+    public void onEditAngelClick(View v) {
         ImageButton button = (ImageButton) v;
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
         startActivityForResult(intent, PICK_CONTACT);
     }
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
@@ -218,14 +509,13 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         if (event.values[0] == 1.0f) {
             mStep++;
             isMoving = true;
-        }
-        else if (event.values[0] != 0.0f){
+        } else if (event.values[0] != 0.0f) {
             isMoving = false;
         }
 
         mTextView.setText(Integer.toString(mStep));
         //mTextView.setText(Boolean.toString(isMoving));
-        }
+    }
     /*
     public int getSteps(){
         return mStep;
