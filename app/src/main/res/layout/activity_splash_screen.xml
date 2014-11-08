@@ -9,9 +9,10 @@
         android:layout_width="300dp"
         android:layout_height="200dp"
         android:scaleType="centerInside"
-        android:layout_marginTop="99dp"
+        android:layout_marginTop="150dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/splash_logo"/>
 
 
 </RelativeLayout>

@@ -3,6 +3,7 @@
 
     <string name="app_name">Guardian</string>
     <string name="welcome_to_guardian">Welcome to Guardian!</string>
+    <string name="setup_emergency_plan">Setup Emergency Plan</string>
     <string name="welcome_message">Guardian is the simplest way to feel safe while you\'re traveling.</string>
     <string name="welcome_message_two">Let\'s begin by setting up your Emergency Plan.</string>
     <string name="action_settings">Settings</string>
@@ -20,6 +21,20 @@
     <string name="immobile_timer_message_two">If you do not respond to the notification. Guardian will alert your Angel with your location details, and advise to contact the authorities.</string>
     <string name="set_timer_button">Set Immobile Timer</string>
     <string name="title_activity_immobile_timer">ImmobileTimer</string>
-
-
+    <string name="title_activity_confirm_angel">ConfirmAngel</string>
+    <string name="title_activity_send_text_to_angel">SendTextToAngel</string>
+    <string name="predefined_text_message">Congratulations! You have been assigned as my Angel when I use the Guardian application.</string>
+    <!--You will be alerted with my location, if I become immobile and unresponsive. Thanks for helping to keep me safe!</string> -->
+    <string name="send_text_message_button">Message Angel</string>
+    <string name="title_activity_timer">Timer</string>
+    <string name="confirm_angel_header">Confirm Angel</string>
+    <string name="confirm_angel_tv1">You have chosen</string>
+    <string name="confirm_angel_tv2">as your Angel.</string>
+    <string name="send_text_header">Message Angel</string>
+    <string name="send_text_tv">Notify your Angel of their special role in your life. </string>
+    <string name="pick_time">Pick Time</string>
+    <string name="step_counter">android.hardware.sensor.stepcounter</string>
+    <string name="step_detector">android.hardware.sensor.stepdetector </string>
+    <string name="immobile_timer1_title">Set Default Immobile Timer></string>
+    <string name="manage_guardian_header">Manage Guardian</string>
 </resources>

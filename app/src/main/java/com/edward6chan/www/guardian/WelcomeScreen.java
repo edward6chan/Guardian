@@ -15,7 +15,15 @@ public class WelcomeScreen extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
+
         setContentView(R.layout.activity_welcome_screen);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        overridePendingTransition(R.anim.activity_open_scale, R.anim.activity_close_translate);
     }
 
 

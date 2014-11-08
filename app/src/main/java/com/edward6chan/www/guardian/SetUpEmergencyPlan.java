@@ -1,32 +1,32 @@
 package com.edward6chan.www.guardian;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.net.Uri;
-import android.database.Cursor;
-import android.view.View;
-import android.widget.Button;
-import com.getpebble.android.kit.Constants;
-import com.getpebble.android.kit.PebbleKit;
 import android.telephony.SmsManager;
-import android.location.*;
-import android.os.Handler;
-import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.widget.EditText;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+
+import com.getpebble.android.kit.Constants;
+import com.getpebble.android.kit.PebbleKit;
+
 import java.util.List;
-import android.content.Context;
-
-
-
-
 
 
 public class SetUpEmergencyPlan extends Activity {
@@ -43,12 +43,12 @@ public class SetUpEmergencyPlan extends Activity {
 
     String phoneNumber;
 
-        @Override
+    @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
 
         switch (reqCode) {
-            case (PICK_CONTACT) :
+            case (PICK_CONTACT):
                 if (resultCode == Activity.RESULT_OK) {
                     /*
                     Uri contactData = data.getData();
@@ -61,9 +61,9 @@ public class SetUpEmergencyPlan extends Activity {
                         startActivity(i);
                     }
                     */
-                    String[] projection = new String[] {
+                    String[] projection = new String[]{
                             ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
-                    Uri contacts =  data.getData();
+                    Uri contacts = data.getData();
                     Cursor cursor = getContentResolver().query(contacts,
                             projection, // Which columns to return
                             null,       // Which rows to return (all rows)
@@ -75,21 +75,22 @@ public class SetUpEmergencyPlan extends Activity {
                         String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                         phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                        Intent i = new Intent(this, ManageGuardian.class);
+
+                        Intent i = new Intent(this, ConfirmAngel.class);
                         Bundle guardian_info = new Bundle();
                         guardian_info.putString("guardian_name", name);
                         guardian_info.putString("guardian_phone_number", phoneNumber);
                         i.putExtras(guardian_info);
                         //i.putExtra("guardian_name", name);
 
+                        SetUpEmergencyPlan.this.startActivity(i);
 
                         //i.putExtra("guardian_phone_number", phoneNumber);
                         //requestLocationForSms();
                         //sendSMS(phoneNumber, "Hi You got a message!");
                         //startActivity(i);
 
-                        i = new Intent(SetUpEmergencyPlan.this, ImmobileTimerScreenOne.class);
-                        SetUpEmergencyPlan.this.startActivity(i);
+                        // i = new Intent(SetUpEmergencyPlan.this, ImmobileTimerScreenOne.class);
                     }
                 }
                 break;
@@ -151,8 +152,7 @@ public class SetUpEmergencyPlan extends Activity {
         startActivityForResult(intent, PICK_CONTACT);
     }
 
-    private void sendSMS(String phoneNumber, String message)
-    {
+    private void sendSMS(String phoneNumber, String message) {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
     }
@@ -196,6 +196,7 @@ public class SetUpEmergencyPlan extends Activity {
             }
         }
     }
+
     public void sendLocationSms(Location l) {
         if (mLocationPending) {
             mLocationPending = false;
