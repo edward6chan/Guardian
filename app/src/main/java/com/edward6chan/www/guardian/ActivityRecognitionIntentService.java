@@ -69,6 +69,18 @@ public class ActivityRecognitionIntentService extends IntentService {
              */
         
             //Log.i(TAG, "Activity:" + activityName);
+
+            //We create the intent to pass on to the receiver here
+            //I think this is a default name hehe
+            Intent i = new Intent("com.edward6chan.www.guardian.ACTIVITY_RECOGNITION_DATA");
+
+            //Here is where we set the names for the keys to access corresponding values
+            i.putExtra("Activity", activityName);
+
+            i.putExtra("Confidence", confidence);
+
+            sendBroadcast(i);
+
         } else {
             Log.i(TAG, "else");
 

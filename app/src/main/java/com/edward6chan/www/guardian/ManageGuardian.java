@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -53,6 +55,9 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
     public enum REQUEST_TYPE {START, STOP}
 
     private REQUEST_TYPE mRequestType;
+
+    private BroadcastReceiver mActivityBroadcastReceiver;
+
 
     /*
      * Store the PendingIntent used to send activity recognition events
@@ -235,6 +240,34 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
             mInProgress = true;
             // Request a connection to Location Services
             mActivityRecognitionClient.connect();
+
+            //Register broadcast receiver here, to start listening
+            mActivityBroadcastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    //called every time it receives something
+                    //'intent' stores information that the intent that is sending the info stores for this receiver
+                    // in your case --- ActivityRecognitionIntentService
+                    // intent.getStringExtra("Activity") --- stores the activity name/code
+                    // intent.getExtras().getInt("Confidence") -- corresponding confidence (100% etc..)
+
+                    String activityPerformed = intent.getStringExtra("Activity");
+                    int confidence = intent.getExtras().getInt("Confidence");
+
+                    Log.i(TAG, "Activity: " + activityPerformed +", " + "Confidence: " + confidence);
+
+                    textView.setText(activityPerformed+ ", " + confidence);
+                }
+
+            };
+
+            IntentFilter filter = new IntentFilter();
+
+            filter.addAction("com.edward6chan.www.guardian.ACTIVITY_RECOGNITION_DATA");
+
+            registerReceiver(mActivityBroadcastReceiver, filter);
+
+
             //
         } else {
             /*
