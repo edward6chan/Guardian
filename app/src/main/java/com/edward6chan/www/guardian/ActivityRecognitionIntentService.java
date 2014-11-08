@@ -21,8 +21,10 @@ public class ActivityRecognitionIntentService extends IntentService {
 
     private final String TAG = "ActivityRecognitionIntentService";
 
+
     public ActivityRecognitionIntentService() {
         super("My Activity Recognition Service");
+
 
     }
 
@@ -65,7 +67,7 @@ public class ActivityRecognitionIntentService extends IntentService {
              * send it to an Activity or Service in a broadcast
              * Intent.
              */
-
+        
             //Log.i(TAG, "Activity:" + activityName);
         } else {
             Log.i(TAG, "else");

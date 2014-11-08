@@ -143,6 +143,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         super.onResume();
         mSensorManager.registerListener(this, mStepSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
+        //move to be toggled when active
         startUpdates();
     }
 
@@ -325,6 +326,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
     }
 
     // Implementation of OnConnectionFailedListener.onConnectionFailed
+    //for google play services
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.i(TAG, "onConnectionFailed() hit.");
@@ -459,7 +461,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         }
     }
 
-
+    //for google play services
     private boolean servicesConnected() {
         // Check that Google Play services is available
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
