@@ -29,11 +29,15 @@ import android.widget.TextView;
 
 import com.doomonafireball.betterpickers.hmspicker.HmsPickerBuilder;
 import com.doomonafireball.betterpickers.hmspicker.HmsPickerDialogFragment;
+import com.getpebble.android.kit.PebbleKit;
+import com.getpebble.android.kit.util.PebbleDictionary;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognitionClient;
+
+import java.util.UUID;
 
 
 public class ManageGuardian extends FragmentActivity implements SensorEventListener, HmsPickerDialogFragment.HmsPickerDialogHandler, GooglePlayServicesClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -57,6 +61,15 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
     private REQUEST_TYPE mRequestType;
 
     private BroadcastReceiver mActivityBroadcastReceiver;
+    private IntentFilter filter;
+
+    String activityPerformed;
+    int confidence;
+
+    MyCountdownTimer mImmobileTimer;
+
+    //private static final int TEMP_KEY = 1;                      // for Pebble Watch testing
+    //private static final UUID GUARDIAN_UUID = UUID.fromString("playground.c");
 
 
     /*
@@ -132,7 +145,9 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         mTimer_Set = (TextView) findViewById(R.id.timer_set);
         int secondsInt = Integer.parseInt(seconds);
         secondsInt = secondsInt * 1000;
-        MyCountdownTimer counter = new MyCountdownTimer(secondsInt, 1000, mTimer_Set);
+        mImmobileTimer = new MyCountdownTimer(secondsInt, 1000, mTimer_Set);
+
+
         //}
 
         mTextView = (TextView) findViewById(R.id.stepCount);
@@ -140,6 +155,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mStepSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
+        //sendGuardianToWatch(name);
     }
 
     @Override
@@ -149,7 +165,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         mSensorManager.registerListener(this, mStepSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
         //move to be toggled when active
-        startUpdates();
+        //startUpdates();
     }
 
     protected void onPause() {
@@ -213,6 +229,11 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
             return mDialog;
         }
     }
+    //timer start
+
+    public void startImmobileTimer(){
+        mImmobileTimer.start();
+    }
 
     /**
      * Request activity recognition updates based on the current
@@ -220,6 +241,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
      */
     public void startUpdates() {
         Log.i(TAG, "startUpdates() hit.");
+
 
         // Set the request type to START
         mRequestType = REQUEST_TYPE.START;
@@ -233,6 +255,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         if (!servicesConnected()) {
             return;
         }
+
         // If a request is not already underway
         if (!mInProgress) {
             Log.i(TAG, "Not in progress");
@@ -240,32 +263,6 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
             mInProgress = true;
             // Request a connection to Location Services
             mActivityRecognitionClient.connect();
-
-            //Register broadcast receiver here, to start listening
-            mActivityBroadcastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    //called every time it receives something
-                    //'intent' stores information that the intent that is sending the info stores for this receiver
-                    // in your case --- ActivityRecognitionIntentService
-                    // intent.getStringExtra("Activity") --- stores the activity name/code
-                    // intent.getExtras().getInt("Confidence") -- corresponding confidence (100% etc..)
-
-                    String activityPerformed = intent.getStringExtra("Activity");
-                    int confidence = intent.getExtras().getInt("Confidence");
-
-                    Log.i(TAG, "Activity: " + activityPerformed +", " + "Confidence: " + confidence);
-
-                    textView.setText(activityPerformed+ ", " + confidence);
-                }
-
-            };
-
-            IntentFilter filter = new IntentFilter();
-
-            filter.addAction("com.edward6chan.www.guardian.ACTIVITY_RECOGNITION_DATA");
-
-            registerReceiver(mActivityBroadcastReceiver, filter);
 
 
             //
@@ -277,6 +274,46 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
              * request.
              */
         }
+        //Register broadcast receiver here, to start listening
+        mActivityBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //called every time it receives something
+                //'intent' stores information that the intent that is sending the info stores for this receiver
+                // in your case --- ActivityRecognitionIntentService
+                // intent.getStringExtra("Activity") --- stores the activity name/code
+                // intent.getExtras().getInt("Confidence") -- corresponding confidence (100% etc..)
+
+                activityPerformed = intent.getStringExtra("Activity");
+                confidence = intent.getExtras().getInt("Confidence");
+
+                Log.i(TAG, "Activity: " + activityPerformed +", " + "Confidence: " + confidence);
+
+                textView.setText(activityPerformed+ ", " + confidence);
+                //mImmobileTimer.onTick(long );
+
+                String still = "still";
+                if (activityPerformed == still){
+                //    mImmobileTimer.start();
+                    Log.i(TAG, "it is still timer should have started");
+                }
+                else{
+                    mImmobileTimer.cancel();
+
+                }
+            }
+
+
+
+
+        };
+
+
+        filter = new IntentFilter();
+
+        filter.addAction("com.edward6chan.www.guardian.ACTIVITY_RECOGNITION_DATA");
+
+        registerReceiver(mActivityBroadcastReceiver, filter);
     }
 
     /**
@@ -326,6 +363,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
                  * This call is synchronous.
                  */
                 mActivityRecognitionClient.requestActivityUpdates(DETECTION_INTERVAL_MILLISECONDS, mActivityRecognitionPendingIntent);
+
                 break;
 
             case STOP:
@@ -432,10 +470,16 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         if (active_inactive == "ACTIVE") {
             mToggleSwitch.setText("INACTIVE");
             isActive = false;
+            stopUpdates();
+
+           // stop broadcast receiver
+            unregisterReceiver(mActivityBroadcastReceiver);
 
         } else {
             mToggleSwitch.setText("ACTIVE");
             isActive = true;
+            startUpdates();
+            startImmobileTimer();
         }
     }
 
@@ -546,6 +590,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
             isMoving = true;
         } else if (event.values[0] != 0.0f) {
             isMoving = false;
+
         }
 
         mTextView.setText(Integer.toString(mStep));
@@ -566,6 +611,11 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
 
     return isMoving;
     }*/
+/*
+    public void sendGuardianToWatch(String guardian) {
+        PebbleDictionary data = new PebbleDictionary();
+        data.addString(TEMP_KEY, guardian);
 
-
+        PebbleKit.sendDataToPebble(getApplicationContext(), GUARDIAN_UUID, data);
+    }*/
 }
