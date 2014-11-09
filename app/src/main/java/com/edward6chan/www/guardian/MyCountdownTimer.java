@@ -89,8 +89,8 @@ public class MyCountdownTimer extends CountDownTimer {
     @Override
     public void onFinish() {
         // TODO Auto-generated method stub
-
-        timer_set.setText("00:00:00");
+        this.cancel();
+        timer_set.setText("0:00:00");
     }
 
     @Override
