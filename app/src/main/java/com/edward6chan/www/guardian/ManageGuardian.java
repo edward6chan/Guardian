@@ -12,8 +12,6 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,15 +27,11 @@ import android.widget.TextView;
 
 import com.doomonafireball.betterpickers.hmspicker.HmsPickerBuilder;
 import com.doomonafireball.betterpickers.hmspicker.HmsPickerDialogFragment;
-import com.getpebble.android.kit.PebbleKit;
-import com.getpebble.android.kit.util.PebbleDictionary;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognitionClient;
-
-import java.util.UUID;
 
 //took out implements Sensor Listener
 public class ManageGuardian extends FragmentActivity implements HmsPickerDialogFragment.HmsPickerDialogHandler, GooglePlayServicesClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -265,8 +259,6 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
             mInProgress = true;
             // Request a connection to Location Services
             mActivityRecognitionClient.connect();
-
-
             //
         } else {
             /*
@@ -342,21 +334,13 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         if (!servicesConnected()) {
             return;
         }
-        // If a request is not already underway
-        if (!mInProgress) {
-            // Indicate that a request is in progress
-            mInProgress = true;
-            // Request a connection to Location Services
-            mActivityRecognitionClient.connect();
-            //
-        } else {
-            /*
-             * A request is already underway. You can handle
-             * this situation by disconnecting the client,
-             * re-setting the flag, and then re-trying the
-             * request.
-             */
-        }
+
+        mInProgress = false;
+
+        mActivityRecognitionClient.removeActivityUpdates(mActivityRecognitionPendingIntent);
+
+        //krista added not android - will this help it stop getting updates?
+        mActivityRecognitionClient.disconnect();
     }
 
     @Override
@@ -377,11 +361,14 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
                 break;
 
             case STOP:
+                //CASE NOT REQUIRED -- CLEANUP
                 Log.i(TAG, "Case: STOP");
 
                 mActivityRecognitionClient.removeActivityUpdates(mActivityRecognitionPendingIntent);
+
                 //krista added not android - will this help it stop getting updates?
-                onDisconnected();
+                mActivityRecognitionClient.disconnect();
+
                 break;
                 /*
                  * An enum was added to the definition of REQUEST_TYPE,
