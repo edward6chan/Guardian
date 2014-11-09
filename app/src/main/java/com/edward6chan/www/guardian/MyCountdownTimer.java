@@ -14,6 +14,9 @@ public class MyCountdownTimer extends CountDownTimer {
     int remaining_mins;
     int remaining_secs;
     TextView timer_set;
+    String hoursToDisplay;
+    String minsToDisplay;
+    String secsToDisplay;
 
 
     public MyCountdownTimer(long millisInFuture, long countDownInterval, TextView timer) {
@@ -27,10 +30,35 @@ public class MyCountdownTimer extends CountDownTimer {
         //Remaining mins: 30 , Remaining secs: 30 seconds
         timer_set=timer;
 
-        String hoursToDisplay;
-        String minsToDisplay;
-        String secsToDisplay;
+        timerReset(millisInFuture);
 
+//        total_seconds = millisInFuture / 1000;
+//        total_mins = (int) total_seconds / 60;
+//        total_hours = total_mins / 60;
+//
+//        remaining_mins = total_mins - total_hours * 60;
+//
+//        remaining_secs = (int) total_seconds - total_mins * 60;
+//
+//        hoursToDisplay = total_hours + "";
+//        minsToDisplay = remaining_mins + "";
+//        secsToDisplay = remaining_secs + "";
+//
+//        //not possible to put more than 9 hours on the timer.
+//        /*if (total_hours >= 0 && total_hours <= 9) {
+//            hoursToDisplay = "0" + total_hours;
+//        }*/
+//        if (remaining_mins >= 0 && remaining_mins <= 9) {
+//            minsToDisplay = "0" + remaining_mins;
+//        }
+//        if (remaining_secs >= 0 && remaining_secs <= 9) {
+//            secsToDisplay = "0" + remaining_secs;
+//        }
+//
+//        timer_set.setText(hoursToDisplay + ":" + minsToDisplay + ":" + secsToDisplay);
+    }
+
+    public void timerReset(long millisInFuture){
         total_seconds = millisInFuture / 1000;
         total_mins = (int) total_seconds / 60;
         total_hours = total_mins / 60;
@@ -56,8 +84,6 @@ public class MyCountdownTimer extends CountDownTimer {
 
         timer_set.setText(hoursToDisplay + ":" + minsToDisplay + ":" + secsToDisplay);
     }
-
-
     Timer app1 = new Timer();
 
     @Override
@@ -93,9 +119,10 @@ public class MyCountdownTimer extends CountDownTimer {
         minsToDisplay = remaining_mins + "";
         secsToDisplay = remaining_secs + "";
 
-        if (total_hours >= 0 && total_hours <= 9) {
+        //not possible to put more than 9 hours on the timer.
+        /*if (total_hours >= 0 && total_hours <= 9) {
             hoursToDisplay = "0" + total_hours;
-        }
+        }*/
         if (remaining_mins >= 0 && remaining_mins <= 9) {
             minsToDisplay = "0" + remaining_mins;
         }

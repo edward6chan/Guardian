@@ -39,8 +39,8 @@ import com.google.android.gms.location.ActivityRecognitionClient;
 
 import java.util.UUID;
 
-
-public class ManageGuardian extends FragmentActivity implements SensorEventListener, HmsPickerDialogFragment.HmsPickerDialogHandler, GooglePlayServicesClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+//took out implements Sensor Listener
+public class ManageGuardian extends FragmentActivity implements HmsPickerDialogFragment.HmsPickerDialogHandler, GooglePlayServicesClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private SharedPreferences mSharedPreferences;
@@ -63,8 +63,10 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
     private BroadcastReceiver mActivityBroadcastReceiver;
     private IntentFilter filter;
 
+    Boolean mFlagTimerStarted;
     String activityPerformed;
     int confidence;
+    int secondsInt;
 
     MyCountdownTimer mImmobileTimer;
 
@@ -143,10 +145,10 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
 
         //creating timer and displaying timer to correct textview
         mTimer_Set = (TextView) findViewById(R.id.timer_set);
-        int secondsInt = Integer.parseInt(seconds);
+        secondsInt = Integer.parseInt(seconds);
         secondsInt = secondsInt * 1000;
         mImmobileTimer = new MyCountdownTimer(secondsInt, 1000, mTimer_Set);
-
+        mFlagTimerStarted = false;
 
         //}
 
@@ -162,7 +164,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
     protected void onResume() {
         Log.i(TAG, "onResume() hit.");
         super.onResume();
-        mSensorManager.registerListener(this, mStepSensor, SensorManager.SENSOR_DELAY_FASTEST);
+       // mSensorManager.registerListener(this, mStepSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
         //move to be toggled when active
         //startUpdates();
@@ -170,12 +172,12 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
 
     protected void onPause() {
         super.onPause();
-        mSensorManager.unregisterListener(this, mStepSensor);
+        //mSensorManager.unregisterListener(this, mStepSensor);
     }
 
     protected void onStop() {
         super.onPause();
-        mSensorManager.unregisterListener(this, mStepSensor);
+        //mSensorManager.unregisterListener(this, mStepSensor);
     }
 
     @Override
@@ -293,12 +295,20 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
                 //mImmobileTimer.onTick(long );
 
                 String still = "still";
-                if (activityPerformed == still){
-                //    mImmobileTimer.start();
-                    Log.i(TAG, "it is still timer should have started");
+                if(activityPerformed.equals(still) && mFlagTimerStarted==false) {
+                    //    mImmobileTimer.start();
+                    startImmobileTimer();
+                    mFlagTimerStarted = true;
+
                 }
-                else{
+                else if (activityPerformed.equals(still)){
+
+                }
+                else {
                     mImmobileTimer.cancel();
+                    mImmobileTimer.timerReset(secondsInt);
+                    mFlagTimerStarted=false;
+
 
                 }
             }
@@ -370,6 +380,8 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
                 Log.i(TAG, "Case: STOP");
 
                 mActivityRecognitionClient.removeActivityUpdates(mActivityRecognitionPendingIntent);
+                //krista added not android - will this help it stop getting updates?
+                onDisconnected();
                 break;
                 /*
                  * An enum was added to the definition of REQUEST_TYPE,
@@ -456,6 +468,7 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         int milliSeconds = seconds * 1000;
         mSharedPreferences.edit().putString("TIMER", seconds + "").commit();
         MyCountdownTimer counter = new MyCountdownTimer(milliSeconds, 1000, mTimer_Set);
+        secondsInt=milliSeconds;
 
     }
 
@@ -471,15 +484,18 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
             mToggleSwitch.setText("INACTIVE");
             isActive = false;
             stopUpdates();
-
            // stop broadcast receiver
             unregisterReceiver(mActivityBroadcastReceiver);
+            textView.setText("inactive");
+            mImmobileTimer.cancel();
+            mImmobileTimer.timerReset(secondsInt);
+            mFlagTimerStarted=false;
 
         } else {
             mToggleSwitch.setText("ACTIVE");
             isActive = true;
             startUpdates();
-            startImmobileTimer();
+
         }
     }
 
@@ -577,40 +593,40 @@ public class ManageGuardian extends FragmentActivity implements SensorEventListe
         startActivityForResult(intent, PICK_CONTACT);
     }
 
-    @Override
+    //@Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        Sensor sensor = event.sensor;
-        if (event.values[0] == 1.0f) {
-            mStep++;
-            isMoving = true;
-        } else if (event.values[0] != 0.0f) {
-            isMoving = false;
-
-        }
-
-        mTextView.setText(Integer.toString(mStep));
-        //mTextView.setText(Boolean.toString(isMoving));
-    }
-    /*
-    public int getSteps(){
-        return mStep;
-    }
-
-    public boolean isMoving(){
-        boolean isMoving = false;
-
-        if (event.values[0] == 1.0f) {
-            isMoving = true;
-        }
-        else if
-
-    return isMoving;
-    }*/
+//    @Override
+//    public void onSensorChanged(SensorEvent event) {
+//        Sensor sensor = event.sensor;
+//        if (event.values[0] == 1.0f) {
+//            mStep++;
+//            isMoving = true;
+//        } else if (event.values[0] != 0.0f) {
+//            isMoving = false;
+//
+//        }
+//
+//        mTextView.setText(Integer.toString(mStep));
+////        //mTextView.setText(Boolean.toString(isMoving));
+////    }
+////    /*
+//    public int getSteps(){
+//        return mStep;
+//    }
+//
+//    public boolean isMoving(){
+//        boolean isMoving = false;
+//
+//        if (event.values[0] == 1.0f) {
+//            isMoving = true;
+//        }
+//        else if
+//
+//    return isMoving;
+//    }*/
 /*
     public void sendGuardianToWatch(String guardian) {
         PebbleDictionary data = new PebbleDictionary();
