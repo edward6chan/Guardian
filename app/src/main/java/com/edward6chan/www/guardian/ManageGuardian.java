@@ -454,8 +454,14 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         seconds = hour * 60 * 60 + minute * 60 + second;
         int milliSeconds = seconds * 1000;
         mSharedPreferences.edit().putString("TIMER", seconds + "").commit();
-        MyCountdownTimer counter = new MyCountdownTimer(milliSeconds, 1000, mTimer_Set);
+        //MyCountdownTimer counter = new MyCountdownTimer(milliSeconds, 1000, mTimer_Set);
+//        secondsInt = Integer.parseInt(seconds);
+//        secondsInt = secondsInt * 1000;
         secondsInt=milliSeconds;
+        mImmobileTimer = new MyCountdownTimer(secondsInt, 1000, mTimer_Set);
+        mImmobileTimer.cancel();
+        mImmobileTimer.timerReset(secondsInt);
+        mFlagTimerStarted=false;
 
     }
 
