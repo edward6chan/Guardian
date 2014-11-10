@@ -64,6 +64,8 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 
     String name, phoneNumber;
 
+    ImageButton mEditAngel, mEditTimer;
+
     //send location sms
     private LocationManager mLocationManager;
     private String mProviderName;
@@ -590,12 +592,13 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         toggle = (Button) v;
         Boolean isActive = false;
 
-
+        mEditAngel = (ImageButton) findViewById(R.id.edit_angel);
+        mEditTimer = (ImageButton) findViewById(R.id.edit_timer);
 
         mToggleSwitch = (TextView) findViewById(R.id.toggle_active_inactive);
         String active_inactive = mToggleSwitch.getText().toString();
 
-        if (active_inactive == "ACTIVE") {
+        if (active_inactive.equals("ACTIVE")) {
             mToggleSwitch.setText("INACTIVE");
             isActive = false;
             stopUpdates();
@@ -605,6 +608,8 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
             mImmobileTimer.cancel();
             mImmobileTimer.timerReset(secondsInt,mImmobile);
             mFlagTimerStarted=false;
+            mEditAngel.setVisibility(View.VISIBLE);
+            mEditTimer.setVisibility(View.VISIBLE);
 
         }
         if (active_inactive.equals("ANGEL CONTACTED")){
@@ -612,16 +617,21 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
             isActive = false;
             // stop broadcast receiver
             unregisterReceiver(mActivityBroadcastReceiver);
-            textView.setText("inactive");
             mImmobileTimer.cancel();
             mImmobileTimer.timerReset(secondsInt,mImmobile);
             mFlagTimerStarted=false;
+            mEditAngel.setVisibility(View.VISIBLE);
+            mEditTimer.setVisibility(View.VISIBLE);
 
         }
-        else {
+        if (active_inactive.equals("INACTIVE")){
             mToggleSwitch.setText("ACTIVE");
             isActive = true;
             startUpdates();
+            mEditAngel.setVisibility(View.GONE);
+            mEditTimer.setVisibility(View.GONE);
+
+
 
         }
     }
@@ -714,7 +724,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     }
 
     public void onEditAngelClick(View v) {
-        ImageButton button = (ImageButton) v;
+        mEditAngel = (ImageButton) v;
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
         startActivityForResult(intent, PICK_CONTACT);
