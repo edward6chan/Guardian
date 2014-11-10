@@ -90,7 +90,9 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     int secondsInt;
 
     MyCountdownTimer mImmobileTimer;
+    MyCountdownTimer mtimerOk;
     Button toggle;
+    Button dialogYes, dialogInactive;
 
     //private static final int TEMP_KEY = 1;                      // for Pebble Watch testing
     //private static final UUID GUARDIAN_UUID = UUID.fromString("playground.c");
@@ -528,85 +530,40 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     //when the immobile timer expires, Guardian asks the user if they are okay to determine
     //if they are truly unresponsive
     public void timerDoneAskOk() {
-        //secondsInt, 1000, mTimer_Set, this)
         //for alert window
+        toggle.performClick();
         LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
         alertView = inflater.inflate(R.layout.custom_alert_layout, null);
 
-        builder = new AlertDialog.Builder(this);
+        builder = new AlertDialog.Builder(this,android.R.style.Theme_DeviceDefault_Light_Dialog);
         builder.setView(alertView);
-        //builder.setTitle("Immobile Timer Expired");
-        //builder.setIcon(R.drawable.snowflake);
+
         TextView okTimer = (TextView) alertView.findViewById(R.id.ok_timer);
         int ok = 1;
-        final MyCountdownTimer timerOk = new MyCountdownTimer(1000, 1000, okTimer, thisManageGuardian, ok);
-//        void onClickYes(View v){
-//            Button button = (Button) v;
-//
-//
-//        }
+        mtimerOk = new MyCountdownTimer(30000, 1000, okTimer, thisManageGuardian, ok);
         builder.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mImmobileTimer.timerReset(secondsInt, mImmobile);
-                timerOk.cancel();
+                //mImmobileTimer.timerReset(secondsInt, mImmobile);
+                toggle.performClick();
+                mtimerOk.cancel();
                 return;
 
             }
         })
-                .setNegativeButton(R.string.setInactive, new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.setInactive, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        toggle.performClick();
-                        timerOk.cancel();
+                        mtimerOk.cancel();
                         return;
                     }
                 });
 
-        //builder.setCancelable(true);
         myDialog = builder.create();
         myDialog.show();
 
-//        button.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                myDialog.show();
-//            }
-//       });
+
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//// Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.activity_main, menu);
-//        return true;
-//    }
-
-//}
-//
-//    }
-
-    //old way
-//        new AlertDialog.Builder(this)
-//                .setTitle("Immobile Timer Expired")
-//                .setMessage("Are you okay? If you do not respond your Angel will be contacted automatically.")
-//                .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
-//
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        mImmobileTimer.timerReset(secondsInt);
-//                        return;
-//                    }
-//                })
-//                .setNegativeButton(R.string.setInactive, new DialogInterface.OnClickListener() {
-//
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        toggle.performClick();
-//                        return;
-//                    }
-//                }).show();
-//
-//    }
 
 
     public void onSwitchClick(View v) {
@@ -761,7 +718,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     //**
     public void contactAngel() {
         mToggleSwitch.setText("ANGEL CONTACTED");
-        stopUpdates();
+        //stopUpdates();
         requestLocationForSms();
 
     }

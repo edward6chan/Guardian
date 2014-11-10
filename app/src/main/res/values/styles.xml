@@ -6,6 +6,7 @@
     <!-- <item name="android:background">@color/guardian_white</item>-->
         <item name="android:actionBarItemBackground">@color/guardian_blue</item>
         <item name="android:actionBarStyle">@style/ActionBar.Solid.Guardian</item>
+        <!--<item name="android:popupMenuStyle">@style/PopupMenu.Guardian</item>-->
 
     </style>
 
@@ -34,11 +35,11 @@
         <item name="android:background">@drawable/ab_transparent_guardian</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Guardian</item>
     </style>
-
+-->
     <style name="PopupMenu.Guardian" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_guardian</item>
     </style>
-
+<!--
     <style name="DropDownListView.Guardian" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
         <item name="android:listSelector">@drawable/selectable_background_guardian</item>
     </style>
