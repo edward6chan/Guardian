@@ -524,7 +524,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         //builder.setIcon(R.drawable.snowflake);
         TextView okTimer = (TextView)alertView.findViewById(R.id.ok_timer);
         int ok =1;
-        MyCountdownTimer timerOk = new MyCountdownTimer(30000,1000, okTimer, thisManageGuardian, ok);
+        final MyCountdownTimer timerOk = new MyCountdownTimer(30000,1000, okTimer, thisManageGuardian, ok);
 //        void onClickYes(View v){
 //            Button button = (Button) v;
 //
@@ -535,6 +535,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mImmobileTimer.timerReset(secondsInt,mImmobile);
+                timerOk.cancel();
                 return;
 
             }
@@ -542,6 +543,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         .setNegativeButton(R.string.setInactive, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         toggle.performClick();
+                        timerOk.cancel();
                         return;
                     }
         });

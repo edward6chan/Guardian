@@ -109,7 +109,9 @@ public class MyCountdownTimer extends CountDownTimer {
         if (mTimerType == 1){
           timer_set.setText("Your angel will be contacted.");
           mParentManageGuardian.myDialog.dismiss();
-          mParentManageGuardian.contactAngel();
+
+
+            mParentManageGuardian.contactAngel();
 
         }
     }
