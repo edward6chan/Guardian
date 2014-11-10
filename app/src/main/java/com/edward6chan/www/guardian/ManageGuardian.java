@@ -1,11 +1,13 @@
 package com.edward6chan.www.guardian;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
@@ -13,15 +15,26 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
+import android.telephony.SmsManager;
+import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -33,6 +46,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognitionClient;
 
+import java.util.List;
+
 //took out implements Sensor Listener
 public class ManageGuardian extends FragmentActivity implements HmsPickerDialogFragment.HmsPickerDialogHandler, GooglePlayServicesClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -43,7 +58,18 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     private TextView textView;
     private TextView mToggleSwitch;
 
+    public View alertView;
+    public AlertDialog myDialog;
+
+
     String name, phoneNumber;
+
+    //send location sms
+    private LocationManager mLocationManager;
+    private String mProviderName;
+    private Handler mHandler;
+
+    private boolean mLocationPending;
 
     // Constants that define the activity detection interval
     public static final int MILLISECONDS_PER_SECOND = 1000;
@@ -63,11 +89,12 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     int secondsInt;
 
     MyCountdownTimer mImmobileTimer;
+    Button toggle;
 
     //private static final int TEMP_KEY = 1;                      // for Pebble Watch testing
     //private static final UUID GUARDIAN_UUID = UUID.fromString("playground.c");
 
-
+    ManageGuardian thisManageGuardian;
     /*
      * Store the PendingIntent used to send activity recognition events
      * back to the app
@@ -87,14 +114,21 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 
     // Flag that indicates if a request is underway.
     private boolean mInProgress;
+    AlertDialog.Builder builder;
 
-
+    int mImmobile =0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_guardian);
 
         mContext = this;
+        thisManageGuardian=this;
+
+//        //for alert window
+//        LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+//        alertView = inflater.inflate(R.layout.custom_alert_layout, null);
+
 
         mActivityRecognitionClient = new ActivityRecognitionClient(mContext, this, this);
 
@@ -104,6 +138,17 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
          */
         Intent intent = new Intent(mContext, ActivityRecognitionIntentService.class);
 
+        //send location sms
+        mLocationManager =
+                (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setCostAllowed(false);
+
+        mProviderName = mLocationManager.getBestProvider(criteria, true);
+
+        mHandler = new Handler();
         /*
          * Return a PendingIntent that starts the IntentService.
          */
@@ -141,7 +186,8 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         mTimer_Set = (TextView) findViewById(R.id.timer_set);
         secondsInt = Integer.parseInt(seconds);
         secondsInt = secondsInt * 1000;
-        mImmobileTimer = new MyCountdownTimer(secondsInt, 1000, mTimer_Set);
+
+        mImmobileTimer = new MyCountdownTimer(secondsInt, 1000, mTimer_Set, this, mImmobile);
         mFlagTimerStarted = false;
 
         //}
@@ -298,7 +344,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
                 }
                 else {
                     mImmobileTimer.cancel();
-                    mImmobileTimer.timerReset(secondsInt);
+                    mImmobileTimer.timerReset(secondsInt,mImmobile);
                     mFlagTimerStarted=false;
 
 
@@ -454,21 +500,97 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         seconds = hour * 60 * 60 + minute * 60 + second;
         int milliSeconds = seconds * 1000;
         mSharedPreferences.edit().putString("TIMER", seconds + "").commit();
-        //MyCountdownTimer counter = new MyCountdownTimer(milliSeconds, 1000, mTimer_Set);
-//        secondsInt = Integer.parseInt(seconds);
-//        secondsInt = secondsInt * 1000;
         secondsInt=milliSeconds;
-        mImmobileTimer = new MyCountdownTimer(secondsInt, 1000, mTimer_Set);
+        mImmobileTimer = new MyCountdownTimer(secondsInt, 1000, mTimer_Set, this, mImmobile);
         mImmobileTimer.cancel();
-        mImmobileTimer.timerReset(secondsInt);
+        mImmobileTimer.timerReset(secondsInt, mImmobile);
         mFlagTimerStarted=false;
 
     }
 
+    //when the immobile timer expires, Guardian asks the user if they are okay to determine
+    //if they are truly unresponsive
+    public void timerDoneAskOk() {
+        //secondsInt, 1000, mTimer_Set, this)
+        //for alert window
+        LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+        alertView = inflater.inflate(R.layout.custom_alert_layout, null);
+
+        builder = new AlertDialog.Builder(this);
+        builder.setView(alertView);
+        builder.setTitle("Immobile Timer Expired");
+        //builder.setIcon(R.drawable.snowflake);
+        TextView okTimer = (TextView)alertView.findViewById(R.id.ok_timer);
+        int ok =1;
+        MyCountdownTimer timerOk = new MyCountdownTimer(5000,1000, okTimer, thisManageGuardian, ok);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mImmobileTimer.timerReset(secondsInt,mImmobile);
+                return;
+
+            }
+        })
+        .setNegativeButton(R.string.setInactive, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        toggle.performClick();
+                        return;
+                    }
+        });
+
+        //builder.setCancelable(true);
+        myDialog = builder.create();
+        myDialog.show();
+
+//        button.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                myDialog.show();
+//            }
+//       });
+    }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//// Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.activity_main, menu);
+//        return true;
+//    }
+
+//}
+//
+//    }
+
+    //old way
+//        new AlertDialog.Builder(this)
+//                .setTitle("Immobile Timer Expired")
+//                .setMessage("Are you okay? If you do not respond your Angel will be contacted automatically.")
+//                .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
+//
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//                        mImmobileTimer.timerReset(secondsInt);
+//                        return;
+//                    }
+//                })
+//                .setNegativeButton(R.string.setInactive, new DialogInterface.OnClickListener() {
+//
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//                        toggle.performClick();
+//                        return;
+//                    }
+//                }).show();
+//
+//    }
+
+
     public void onSwitchClick(View v) {
 
-        Button button = (Button) v;
+        toggle = (Button) v;
         Boolean isActive = false;
+
+
 
         mToggleSwitch = (TextView) findViewById(R.id.toggle_active_inactive);
         String active_inactive = mToggleSwitch.getText().toString();
@@ -481,10 +603,22 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
             unregisterReceiver(mActivityBroadcastReceiver);
             textView.setText("inactive");
             mImmobileTimer.cancel();
-            mImmobileTimer.timerReset(secondsInt);
+            mImmobileTimer.timerReset(secondsInt,mImmobile);
             mFlagTimerStarted=false;
 
-        } else {
+        }
+        if (active_inactive.equals("ANGEL CONTACTED")){
+            mToggleSwitch.setText("INACTIVE");
+            isActive = false;
+            // stop broadcast receiver
+            unregisterReceiver(mActivityBroadcastReceiver);
+            textView.setText("inactive");
+            mImmobileTimer.cancel();
+            mImmobileTimer.timerReset(secondsInt,mImmobile);
+            mFlagTimerStarted=false;
+
+        }
+        else {
             mToggleSwitch.setText("ACTIVE");
             isActive = true;
             startUpdates();
@@ -589,6 +723,89 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     //@Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+    //**
+    //SEND SMS WITH LOCATION TO ANGEL
+    //**
+    public void contactAngel(){
+        mToggleSwitch.setText("ANGEL CONTACTED");
+        stopUpdates();
+        //requestLocationForSms();
+
+    }
+
+    private void sendSMS(String phoneNumber, String message) {
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, null, null);
+    }
+
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            sendLocationSms(location);
+            mLocationManager.removeUpdates(this);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle bundle) {
+            Log.e(TAG, "onStatusChanged");
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.e(TAG, "onProviderEnabled");
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.e(TAG, "onProviderDisabled");
+        }
+    };
+
+    public void requestLocationForSms() {
+        if (mProviderName != null && mLocationPending == false) {
+            mLocationPending = true;
+
+            Location lastLocation = mLocationManager.getLastKnownLocation(mProviderName);
+            // if we have a location that's newer than 10 minutes, use it; otherwise get a new location
+            if (lastLocation != null && (System.currentTimeMillis() - lastLocation.getTime() > DateUtils.MINUTE_IN_MILLIS * 10)) {
+                mLocationManager.requestLocationUpdates(mProviderName,
+                        10000,
+                        10,
+                        mLocationListener);
+            } else {
+                sendLocationSms(lastLocation);
+            }
+        }
+    }
+
+    public void sendLocationSms(Location l) {
+        if (mLocationPending) {
+            mLocationPending = false;
+
+            // send SMS with GPS coordinates
+            SmsManager smsManager = SmsManager.getDefault();
+            String locationString = "Get me: " + l.getLatitude() + ", " + l.getLongitude();
+            smsManager.sendTextMessage(phoneNumber, null, locationString, null, null);
+
+            // get address text if we can
+            Geocoder geocoder = new Geocoder(ManageGuardian.this);
+
+            try {
+                List<Address> addresses = geocoder.getFromLocation(l.getLatitude(), l.getLongitude(), 1);
+
+                if (addresses.size() > 0) {
+                    Address a = addresses.get(0);
+                    String addressText = "";
+                    for (int i = 0; i <= a.getMaxAddressLineIndex(); i++) {
+                        addressText += a.getAddressLine(i) + " ";
+                    }
+                    smsManager.sendTextMessage(phoneNumber, null, addressText, null, null);
+                }
+            } catch (Exception e) {
+                // unable to geocode
+            }
+        }
     }
 
 //    @Override

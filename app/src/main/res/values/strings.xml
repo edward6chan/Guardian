@@ -37,4 +37,7 @@
     <string name="step_detector">android.hardware.sensor.stepdetector </string>
     <string name="immobile_timer1_title">Set Default Immobile Timer></string>
     <string name="manage_guardian_header">Manage Guardian</string>
+    <string name="Yes">Yes, reset immobile timer.</string>
+    <string name="setInactive">Set Guardian to inactive.</string>
+
 </resources>

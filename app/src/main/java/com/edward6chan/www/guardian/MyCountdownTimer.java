@@ -17,9 +17,10 @@ public class MyCountdownTimer extends CountDownTimer {
     String hoursToDisplay;
     String minsToDisplay;
     String secsToDisplay;
+    ManageGuardian mParentManageGuardian;
+    int mTimerType;
 
-
-    public MyCountdownTimer(long millisInFuture, long countDownInterval, TextView timer) {
+    public MyCountdownTimer(long millisInFuture, long countDownInterval, TextView timer, ManageGuardian parent, int timertype) {
         super(millisInFuture, countDownInterval);
         //Test:  Seconds - 600, Millis- 600,000
         //Test: 2 hours, 30 mins.
@@ -29,8 +30,10 @@ public class MyCountdownTimer extends CountDownTimer {
         //Milliseconds: 9030000, Seconds: 9030, Mins: 150, Hours: 2
         //Remaining mins: 30 , Remaining secs: 30 seconds
         timer_set=timer;
+        mParentManageGuardian = parent;
+        mTimerType=timertype;
 
-        timerReset(millisInFuture);
+        timerReset(millisInFuture, mTimerType);
 
 //        total_seconds = millisInFuture / 1000;
 //        total_mins = (int) total_seconds / 60;
@@ -58,31 +61,40 @@ public class MyCountdownTimer extends CountDownTimer {
 //        timer_set.setText(hoursToDisplay + ":" + minsToDisplay + ":" + secsToDisplay);
     }
 
-    public void timerReset(long millisInFuture){
+    public void timerReset(long millisInFuture, int type){
+
         total_seconds = millisInFuture / 1000;
-        total_mins = (int) total_seconds / 60;
-        total_hours = total_mins / 60;
+        mTimerType = type;
+        if (mTimerType == 0) {
+            total_mins = (int) total_seconds / 60;
+            total_hours = total_mins / 60;
 
-        remaining_mins = total_mins - total_hours * 60;
+            remaining_mins = total_mins - total_hours * 60;
 
-        remaining_secs = (int) total_seconds - total_mins * 60;
+            remaining_secs = (int) total_seconds - total_mins * 60;
 
-        hoursToDisplay = total_hours + "";
-        minsToDisplay = remaining_mins + "";
-        secsToDisplay = remaining_secs + "";
+            hoursToDisplay = total_hours + "";
+            minsToDisplay = remaining_mins + "";
+            secsToDisplay = remaining_secs + "";
 
-        //not possible to put more than 9 hours on the timer.
+            //not possible to put more than 9 hours on the timer.
         /*if (total_hours >= 0 && total_hours <= 9) {
             hoursToDisplay = "0" + total_hours;
         }*/
-        if (remaining_mins >= 0 && remaining_mins <= 9) {
-            minsToDisplay = "0" + remaining_mins;
-        }
-        if (remaining_secs >= 0 && remaining_secs <= 9) {
-            secsToDisplay = "0" + remaining_secs;
-        }
+            if (remaining_mins >= 0 && remaining_mins <= 9) {
+                minsToDisplay = "0" + remaining_mins;
+            }
+            if (remaining_secs >= 0 && remaining_secs <= 9) {
+                secsToDisplay = "0" + remaining_secs;
+            }
 
-        timer_set.setText(hoursToDisplay + ":" + minsToDisplay + ":" + secsToDisplay);
+            timer_set.setText(hoursToDisplay + ":" + minsToDisplay + ":" + secsToDisplay);
+        }
+        if (mTimerType == 1){
+            remaining_secs = (int)total_seconds;
+            timer_set.setText(" " +secsToDisplay);
+            this.start();
+        }
     }
     Timer app1 = new Timer();
 
@@ -90,13 +102,22 @@ public class MyCountdownTimer extends CountDownTimer {
     public void onFinish() {
         // TODO Auto-generated method stub
         this.cancel();
-        timer_set.setText("0:00:00");
+        if (mTimerType == 0) {
+            timer_set.setText("0:00:00");
+            mParentManageGuardian.timerDoneAskOk();
+        }
+        if (mTimerType == 1){
+          timer_set.setText("Your angel will be contacted.");
+          mParentManageGuardian.myDialog.dismiss();
+          mParentManageGuardian.contactAngel();
+
+        }
     }
 
     @Override
     public void onTick(long millisUntilFinished) {
         // TODO Auto-generated method stub
-
+        if (mTimerType == 0) {
         String hoursToDisplay = "";
         String minsToDisplay = "";
         String secsToDisplay = "";
@@ -127,10 +148,26 @@ public class MyCountdownTimer extends CountDownTimer {
             minsToDisplay = "0" + remaining_mins;
         }
         if (remaining_secs >= 0 && remaining_secs <= 9) {
-            secsToDisplay = "0" + remaining_secs;
-        }
+                secsToDisplay = "0" + remaining_secs;
+            }
 
         timer_set.setText(hoursToDisplay + ":" + minsToDisplay + ":" + secsToDisplay);
+        }
+        if (mTimerType == 1){
+            String secsToDisplay = "";
 
+
+            remaining_secs--;
+
+            secsToDisplay = remaining_secs + "";
+
+            if (remaining_secs >= 0 && remaining_secs <= 9) {
+                secsToDisplay = "0" + remaining_secs;
+            }
+
+            timer_set.setText(""+secsToDisplay);
+
+        }
     }
+
 }
