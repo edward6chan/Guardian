@@ -520,12 +520,17 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 
         builder = new AlertDialog.Builder(this);
         builder.setView(alertView);
-        builder.setTitle("Immobile Timer Expired");
+        //builder.setTitle("Immobile Timer Expired");
         //builder.setIcon(R.drawable.snowflake);
         TextView okTimer = (TextView)alertView.findViewById(R.id.ok_timer);
         int ok =1;
-        MyCountdownTimer timerOk = new MyCountdownTimer(5000,1000, okTimer, thisManageGuardian, ok);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        MyCountdownTimer timerOk = new MyCountdownTimer(30000,1000, okTimer, thisManageGuardian, ok);
+//        void onClickYes(View v){
+//            Button button = (Button) v;
+//
+//
+//        }
+        builder.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {

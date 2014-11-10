@@ -165,7 +165,7 @@ public class MyCountdownTimer extends CountDownTimer {
                 secsToDisplay = "0" + remaining_secs;
             }
 
-            timer_set.setText(""+secsToDisplay);
+            timer_set.setText("You have "+secsToDisplay+" seconds to respond. Otherwise, your Angel will be contacted.");
 
         }
     }
