@@ -3,7 +3,8 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/guardian_white">
+    android:background="@color/guardian_white"
+    >
 
     <LinearLayout
         android:id="@+id/timer_expired_header"

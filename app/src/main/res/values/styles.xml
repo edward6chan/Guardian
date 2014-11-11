@@ -11,7 +11,8 @@
     </style>
 
     <style name="Theme.Guardian" parent="@android:style/Theme.Holo.Light">
-        <item name="android:actionBarItemBackground">@color/guardian_blue</item></style>
+        <item name="android:actionBarItemBackground">@color/guardian_blue</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Guardian</item></style>
         <!--<item name="android:popupMenuStyle">@style/PopupMenu.Guardian</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Guardian</item>
         <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Guardian</item>
@@ -20,6 +21,7 @@
         <item name="android:actionModeBackground">@drawable/cab_background_top_guardian</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_guardian</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Guardian</item>
+
 
 
     </style>-->

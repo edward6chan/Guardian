@@ -116,7 +116,10 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 //        //for alert window
 //        LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
 //        alertView = inflater.inflate(R.layout.custom_alert_layout, null);
-
+        int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
+        //Now you can use the ID with a TextView
+        TextView abTitle = (TextView) findViewById(titleId);
+        abTitle.setTextColor(getResources().getColor(R.color.guardian_white));
 
         mActivityRecognitionClient = new ActivityRecognitionClient(mContext, this, this);
 
@@ -504,14 +507,15 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         toggle.performClick();
         LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
         alertView = inflater.inflate(R.layout.custom_alert_layout, null);
-
-        builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog);
+        //add android.R.style.Theme_DeviceDefault_Light_Dialog if action bar is readded
+        //android.R.style.Theme_Holo_Light_Dialog
+        builder = new AlertDialog.Builder(this);
         builder.setView(alertView);
 
         TextView okTimer = (TextView) alertView.findViewById(R.id.ok_timer);
         int ok = 1;
-        //should be 30000 but changed to 5000 for testing purposes
-        mtimerOk = new MyCountdownTimer(5000, 1000, okTimer, thisManageGuardian, ok);
+        //should be 45000 but changed to 5000 for testing purposes
+        mtimerOk = new MyCountdownTimer(15000, 1000, okTimer, thisManageGuardian, ok);
         builder.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
 
             @Override
@@ -559,14 +563,17 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 
         }
         if (active_inactive.equals("ANGEL CONTACTED")) {
-            mToggleSwitch.setText("INACTIVE");
+            mToggleSwitch.setText("ACTIVE");
             // stop broadcast receiver
-            unregisterReceiver(mActivityBroadcastReceiver);
-            mImmobileTimer.cancel();
-            mImmobileTimer.timerReset(secondsInt, mImmobile);
-            mFlagTimerStarted = false;
-            mEditAngel.setVisibility(View.VISIBLE);
-            mEditTimer.setVisibility(View.VISIBLE);
+//            unregisterReceiver(mActivityBroadcastReceiver);
+//            mImmobileTimer.cancel();
+//            mImmobileTimer.timerReset(secondsInt, mImmobile);
+//            mFlagTimerStarted = false;
+//            mEditAngel.setVisibility(View.VISIBLE);
+//            mEditTimer.setVisibility(View.VISIBLE);
+            startUpdates();
+            mEditAngel.setVisibility(View.GONE);
+            mEditTimer.setVisibility(View.GONE);
 
         }
         if (active_inactive.equals("INACTIVE")) {
