@@ -51,5 +51,6 @@ public class ImmobileTimer extends FragmentActivity implements HmsPickerDialogFr
         mSharedPreferences.edit().putString("TIMER", seconds + "").commit();
         Intent manageGuardian = new Intent(this, ManageGuardian.class);
         ImmobileTimer.this.startActivity(manageGuardian);
+        finish();
     }
 }

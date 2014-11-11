@@ -22,13 +22,15 @@
         android:text="@string/immobile_timer_message"
         android:id="@+id/immobile_timer_message"
         android:layout_below="@id/timer1_screen_header"
-        android:textSize="@dimen/text_instructions_large"
+        android:textSize="23dp"
         android:paddingTop="@dimen/text_padding_instructions"
         android:paddingBottom="@dimen/text_padding_instructions" />
     <ImageView
         style="@style/SetupImage"
         android:id="@+id/immobile_timer_image_one"
         android:layout_below="@id/immobile_timer_message"
+        android:src="@drawable/timer_image_one"
+        android:paddingTop="5dp"
         />
 
     <Button
