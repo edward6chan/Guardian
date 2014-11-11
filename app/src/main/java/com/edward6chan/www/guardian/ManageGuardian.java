@@ -13,16 +13,12 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
@@ -47,7 +43,6 @@ import com.google.android.gms.location.LocationClient;
 
 import java.util.List;
 
-//took out implements Sensor Listener
 public class ManageGuardian extends FragmentActivity implements HmsPickerDialogFragment.HmsPickerDialogHandler, GooglePlayServicesClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -59,18 +54,12 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 
     public View alertView;
     public AlertDialog myDialog;
+    private int seconds;
 
 
     String name, phoneNumber;
 
     ImageButton mEditAngel, mEditTimer;
-
-    //send location sms
-    private LocationManager mLocationManager;
-    private String mProviderName;
-    private Handler mHandler;
-
-    private boolean mLocationPending;
 
     // Constants that define the activity detection interval
     public static final int MILLISECONDS_PER_SECOND = 1000;
@@ -92,7 +81,8 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     MyCountdownTimer mImmobileTimer;
     MyCountdownTimer mtimerOk;
     Button toggle;
-    Button dialogYes, dialogInactive;
+    private TextView mTimer_Set;
+    private Context mContext;
 
     //private static final int TEMP_KEY = 1;                      // for Pebble Watch testing
     //private static final UUID GUARDIAN_UUID = UUID.fromString("playground.c");
@@ -106,19 +96,9 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     // Store the current activity recognition client
     private ActivityRecognitionClient mActivityRecognitionClient;
 
-    //Sensor stuff
-    private SensorManager mSensorManager;
-    private Sensor mStepSensor;
-    //private SensorEventListener mSensorEventListener = null;
-    private TextView mTextView, mTimer_Set;
-    private int mStep, seconds;
-    private boolean isMoving = false;
-    private Context mContext;
-
     private LocationClient mLocationClient;
 
     private Location mCurrentLocation;
-    private ConnectionResult mGPSConnectionResult;
 
     // Flag that indicates if a request is underway.
     private boolean mInProgress;
@@ -130,8 +110,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_guardian);
-
-        mContext = this;
+        mContext=this;
         thisManageGuardian = this;
 
 //        //for alert window
@@ -147,16 +126,10 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
          */
         Intent intent = new Intent(mContext, ActivityRecognitionIntentService.class);
 
-        //send location sms
-        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setCostAllowed(false);
 
-        mProviderName = mLocationManager.getBestProvider(criteria, true);
-
-        mHandler = new Handler();
         /*
          * Return a PendingIntent that starts the IntentService.
          */
@@ -200,10 +173,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 
         //}
 
-        mTextView = (TextView) findViewById(R.id.stepCount);
 
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mStepSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
         //sendGuardianToWatch(name);
 
@@ -356,7 +326,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
                 //mImmobileTimer.onTick(long );
 
                 String still = "still";
-                if (activityPerformed.equals(still) && mFlagTimerStarted == false) {
+                if (activityPerformed.equals(still) && !mFlagTimerStarted) {
                     //    mImmobileTimer.start();
                     startImmobileTimer();
                     mFlagTimerStarted = true;
@@ -412,7 +382,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     public void onConnected(Bundle dataBundle) {
         Log.i(TAG, "onConnected() hit.");
 
-        if(mRequestType!=null) {
+        if (mRequestType != null) {
             switch (mRequestType) {
                 case START:
                     Log.i(TAG, "Case: START");
@@ -535,12 +505,13 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
         alertView = inflater.inflate(R.layout.custom_alert_layout, null);
 
-        builder = new AlertDialog.Builder(this,android.R.style.Theme_DeviceDefault_Light_Dialog);
+        builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog);
         builder.setView(alertView);
 
         TextView okTimer = (TextView) alertView.findViewById(R.id.ok_timer);
         int ok = 1;
-        mtimerOk = new MyCountdownTimer(30000, 1000, okTimer, thisManageGuardian, ok);
+        //should be 30000 but changed to 5000 for testing purposes
+        mtimerOk = new MyCountdownTimer(5000, 1000, okTimer, thisManageGuardian, ok);
         builder.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
 
             @Override
@@ -548,14 +519,12 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
                 //mImmobileTimer.timerReset(secondsInt, mImmobile);
                 toggle.performClick();
                 mtimerOk.cancel();
-                return;
 
             }
         })
                 .setNeutralButton(R.string.setInactive, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         mtimerOk.cancel();
-                        return;
                     }
                 });
 
@@ -569,7 +538,6 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     public void onSwitchClick(View v) {
 
         toggle = (Button) v;
-        Boolean isActive = false;
 
         mEditAngel = (ImageButton) findViewById(R.id.edit_angel);
         mEditTimer = (ImageButton) findViewById(R.id.edit_timer);
@@ -579,7 +547,6 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 
         if (active_inactive.equals("ACTIVE")) {
             mToggleSwitch.setText("INACTIVE");
-            isActive = false;
             stopUpdates();
             // stop broadcast receiver
             unregisterReceiver(mActivityBroadcastReceiver);
@@ -593,7 +560,6 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         }
         if (active_inactive.equals("ANGEL CONTACTED")) {
             mToggleSwitch.setText("INACTIVE");
-            isActive = false;
             // stop broadcast receiver
             unregisterReceiver(mActivityBroadcastReceiver);
             mImmobileTimer.cancel();
@@ -605,7 +571,6 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         }
         if (active_inactive.equals("INACTIVE")) {
             mToggleSwitch.setText("ACTIVE");
-            isActive = true;
             startUpdates();
             mEditAngel.setVisibility(View.GONE);
             mEditTimer.setVisibility(View.GONE);
@@ -708,10 +673,6 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         startActivityForResult(intent, PICK_CONTACT);
     }
 
-    //@Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
 
     //**
     //SEND SMS WITH LOCATION TO ANGEL
@@ -722,34 +683,6 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         requestLocationForSms();
 
     }
-
-    private void sendSMS(String phoneNumber, String message) {
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, null, null);
-    }
-
-//    private final LocationListener mLocationListener = new LocationListener() {
-//        @Override
-//        public void onLocationChanged(Location location) {
-//            sendLocationSms(location);
-//            mLocationManager.removeUpdates(this);
-//        }
-//
-//        @Override
-//        public void onStatusChanged(String provider, int status, Bundle bundle) {
-//            Log.e(TAG, "onStatusChanged");
-//        }
-//
-//        @Override
-//        public void onProviderEnabled(String provider) {
-//            Log.e(TAG, "onProviderEnabled");
-//        }
-//
-//        @Override
-//        public void onProviderDisabled(String provider) {
-//            Log.e(TAG, "onProviderDisabled");
-//        }
-//    };
 
     public void requestLocationForSms() {
 
@@ -822,40 +755,4 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     }
 
 
-//    @Override
-//    public void onSensorChanged(SensorEvent event) {
-//        Sensor sensor = event.sensor;
-//        if (event.values[0] == 1.0f) {
-//            mStep++;
-//            isMoving = true;
-//        } else if (event.values[0] != 0.0f) {
-//            isMoving = false;
-//
-//        }
-//
-//        mTextView.setText(Integer.toString(mStep));
-////        //mTextView.setText(Boolean.toString(isMoving));
-////    }
-////    /*
-//    public int getSteps(){
-//        return mStep;
-//    }
-//
-//    public boolean isMoving(){
-//        boolean isMoving = false;
-//
-//        if (event.values[0] == 1.0f) {
-//            isMoving = true;
-//        }
-//        else if
-//
-//    return isMoving;
-//    }*/
-/*
-    public void sendGuardianToWatch(String guardian) {
-        PebbleDictionary data = new PebbleDictionary();
-        data.addString(TEMP_KEY, guardian);
-
-        PebbleKit.sendDataToPebble(getApplicationContext(), GUARDIAN_UUID, data);
-    }*/
 }

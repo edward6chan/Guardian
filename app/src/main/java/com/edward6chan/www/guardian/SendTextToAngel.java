@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.EditText;
 
 
@@ -21,6 +18,7 @@ public class SendTextToAngel extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_text_to_angel);
+        overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
 
         Bundle intentExtras = getIntent().getExtras();
 
@@ -36,17 +34,6 @@ public class SendTextToAngel extends Activity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     private void sendSMS(String phoneNumber, String message) {
         SmsManager sms = SmsManager.getDefault();
@@ -54,9 +41,6 @@ public class SendTextToAngel extends Activity {
     }
 
     public void sendTextMessageButton (View v) {
-
-
-        ImageButton button = (ImageButton) v;
 
         text_message = (EditText) findViewById(R.id.TextMessage);
         text = text_message.getText().toString();
@@ -66,7 +50,5 @@ public class SendTextToAngel extends Activity {
         Intent i = new Intent(SendTextToAngel.this, ImmobileTimerScreenOne.class);
         SendTextToAngel.this.startActivity(i);
 
-        //Intent i = new Intent(SendTextToAngel.this, ManageGuardian.class);
-        //SendTextToAngel.this.startActivity(i);
     }
 }

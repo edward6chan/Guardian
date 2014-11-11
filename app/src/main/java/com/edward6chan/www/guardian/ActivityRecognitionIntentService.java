@@ -1,9 +1,5 @@
 package com.edward6chan.www.guardian;
 
-/**
- * Created by Apoorva on 08/11/14.
- */
-
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
@@ -108,11 +104,11 @@ public class ActivityRecognitionIntentService extends IntentService {
             case DetectedActivity.STILL:
                 return "still";
             case DetectedActivity.UNKNOWN:
-                return "unknown";
+                return "active";
             case DetectedActivity.WALKING:
                 return "walking";
 
         }
-        return "unknown";
+        return "active";
     }
 }

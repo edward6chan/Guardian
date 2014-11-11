@@ -1,49 +1,43 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/guardian_white"
+tools:context="com.edward6chan.www.guardian.ImmobileTimerScreenOne">
+<LinearLayout
+    android:id="@+id/timer1_screen_header"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.edward6chan.www.guardian.ImmobileTimer">
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:text="@string/pick_time"
-        android:onClick="handleTimePicker"
-        android:id="@+id/button_timer_picker"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+    android:layout_height="@dimen/header_height"
+    android:background="@color/guardian_blue"
+    android:gravity="center"
+    android:orientation="horizontal">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textView"
-        android:layout_above="@+id/button_timer_picker"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="64dp" />
+        style="@style/TitleSetupText"
+        android:layout_below="@id/timer1_screen_header"
+        android:text="@string/immobile_timer1_title" />
+</LinearLayout>
+<TextView
+    style="@style/SetupText"
+    android:text="@string/immobile_timer_message_two"
+    android:id="@+id/immobile_timer_message_two"
+    android:layout_below="@id/timer1_screen_header"
+    android:textSize="@dimen/text_instructions_large"
+    android:paddingTop="@dimen/text_padding_instructions"
+    android:paddingBottom="@dimen/text_padding_instructions" />
+<ImageView
+    style="@style/SetupImage"
+    android:id="@+id/immobile_timer_image_one"
+    android:layout_below="@id/immobile_timer_message_two"
+    />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/set_timer_button"
-        android:id="@+id/button"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="71dp"
-        android:onClick="nextButton" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/test_timer"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+<Button
+    style="@style/NextButton"
+    android:text="Set Immobile Timer"
+    android:id="@+id/next_button_timer1"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="49dp"
+    android:onClick="handleTimePicker" />
 
 </RelativeLayout>

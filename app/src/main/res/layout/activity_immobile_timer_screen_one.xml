@@ -19,8 +19,8 @@
     </LinearLayout>
     <TextView
         style="@style/SetupText"
-        android:text="@string/immobile_timer_message_one"
-        android:id="@+id/immobile_timer_message_one"
+        android:text="@string/immobile_timer_message"
+        android:id="@+id/immobile_timer_message"
         android:layout_below="@id/timer1_screen_header"
         android:textSize="@dimen/text_instructions_large"
         android:paddingTop="@dimen/text_padding_instructions"
@@ -28,7 +28,7 @@
     <ImageView
         style="@style/SetupImage"
         android:id="@+id/immobile_timer_image_one"
-        android:layout_below="@id/immobile_timer_message_one"
+        android:layout_below="@id/immobile_timer_message"
         />
 
     <Button

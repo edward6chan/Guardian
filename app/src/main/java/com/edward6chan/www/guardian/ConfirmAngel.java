@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.view.View;
-import android.widget.Button;
 
 
 public class ConfirmAngel extends Activity {
@@ -60,6 +59,7 @@ public class ConfirmAngel extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_angel);
+        overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
 
         Bundle intentExtras = getIntent().getExtras();
         mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERENCES", MODE_PRIVATE);
@@ -94,7 +94,6 @@ public class ConfirmAngel extends Activity {
 
     public void confirmAngelButton(View v) {
 
-        Button button = (Button) v;
         Bundle guardian_info = new Bundle();
 
 
@@ -112,7 +111,6 @@ public class ConfirmAngel extends Activity {
 
     public void cancelAngelButton(View v) {
 
-        Button button = (Button) v;
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
         startActivityForResult(intent, PICK_CONTACT);

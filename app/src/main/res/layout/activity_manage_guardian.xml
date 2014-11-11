@@ -65,9 +65,11 @@
         android:layout_alignRight="@id/toggle"
         android:layout_below="@id/light_line_status"
         android:paddingRight="20dp"
+        android:layout_marginRight="20dp"
         android:layout_gravity="center_vertical"
         android:visibility="visible"
-        android:onClick="onSwitchClick"/>
+        android:onClick="onSwitchClick"
+        android:textColor="@color/guardian_blue"/>
 <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
