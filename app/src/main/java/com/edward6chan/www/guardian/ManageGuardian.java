@@ -49,7 +49,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     private SharedPreferences mSharedPreferences;
     private final String TAG = "ManageGuardian";
 
-    private TextView textView;
+    private TextView statusView;
     private TextView mToggleSwitch;
 
     public View alertView;
@@ -141,7 +141,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         // Start with the request flag set to false
         mInProgress = false;
 
-        textView = (TextView) findViewById(R.id.stepCount);
+        statusView = (TextView) findViewById(R.id.status);
 
         //getting shared preferences file
         mSharedPreferences = getSharedPreferences("GUARDIAN_PREFERENCES", MODE_PRIVATE);
@@ -316,7 +316,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
             public void onReceive(Context context, Intent intent) {
                 //called every time it receives something
                 //'intent' stores information that the intent that is sending the info stores for this receiver
-                // in your case --- ActivityRecognitionIntentService
+                // in our case --- ActivityRecognitionIntentService
                 // intent.getStringExtra("Activity") --- stores the activity name/code
                 // intent.getExtras().getInt("Confidence") -- corresponding confidence (100% etc..)
 
@@ -325,10 +325,15 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 
                 Log.i(TAG, "Activity: " + activityPerformed + ", " + "Confidence: " + confidence);
 
-                textView.setText(activityPerformed + ", " + confidence);
+                if (activityPerformed.isEmpty()){
+                    statusView.setText("Activating Guardian...");
+                }
+                else {
+                    statusView.setText(activityPerformed + ", " + confidence);
+                }
                 //mImmobileTimer.onTick(long );
 
-                String still = "still";
+                String still = "Still";
                 if (activityPerformed.equals(still) && !mFlagTimerStarted) {
                     //    mImmobileTimer.start();
                     startImmobileTimer();
@@ -554,7 +559,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
             stopUpdates();
             // stop broadcast receiver
             unregisterReceiver(mActivityBroadcastReceiver);
-            textView.setText("inactive");
+            statusView.setText("");
             mImmobileTimer.cancel();
             mImmobileTimer.timerReset(secondsInt, mImmobile);
             mFlagTimerStarted = false;

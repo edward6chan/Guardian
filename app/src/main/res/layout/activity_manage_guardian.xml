@@ -43,6 +43,14 @@
    android:paddingLeft="@dimen/activity_horizontal_margin"
 
         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/status"
+        android:layout_below="@+id/guardian_logo_black"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="4dp"
+        android:textColor="@color/guardian_black"/>
     <ImageView
         android:id="@+id/light_line_status"
         android:layout_width="wrap_content"
@@ -209,13 +217,5 @@
 
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/stepCount"
-        android:layout_below="@+id/edit_timer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
-        android:textColor="@color/guardian_black"/>
+
 </RelativeLayout>

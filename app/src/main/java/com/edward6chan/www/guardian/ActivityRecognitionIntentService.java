@@ -102,13 +102,13 @@ public class ActivityRecognitionIntentService extends IntentService {
 //            case DetectedActivity.ON_BICYCLE:
 //                return "on_bicycle";
             case DetectedActivity.STILL:
-                return "still";
+                return "Still";
             case DetectedActivity.UNKNOWN:
-                return "active";
-            case DetectedActivity.WALKING:
-                return "walking";
+                return "Active";
+//            case DetectedActivity.WALKING:
+//                return "walking";
 
         }
-        return "active";
+        return "Active";
     }
 }
