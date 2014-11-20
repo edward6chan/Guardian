@@ -70,8 +70,6 @@ public class SetUpEmergencyPlan extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_up_emergency_plan);
         overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
-        PebbleKit.startAppOnPebble(getApplicationContext(), Constants.SPORTS_UUID);
-
     }
 
 

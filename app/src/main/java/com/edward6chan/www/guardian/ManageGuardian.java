@@ -34,6 +34,9 @@ import android.widget.TextView;
 
 import com.doomonafireball.betterpickers.hmspicker.HmsPickerBuilder;
 import com.doomonafireball.betterpickers.hmspicker.HmsPickerDialogFragment;
+import com.getpebble.android.kit.Constants;
+import com.getpebble.android.kit.PebbleKit;
+import com.getpebble.android.kit.util.PebbleDictionary;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -42,6 +45,7 @@ import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.location.LocationClient;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ManageGuardian extends FragmentActivity implements HmsPickerDialogFragment.HmsPickerDialogHandler, GooglePlayServicesClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -84,8 +88,8 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     private TextView mTimer_Set;
     private Context mContext;
 
-    //private static final int TEMP_KEY = 1;                      // for Pebble Watch testing
-    //private static final UUID GUARDIAN_UUID = UUID.fromString("playground.c");
+    private static final int TEMP_KEY = 1;
+    private static final UUID MY_UUID = UUID.fromString("485579a8-8636-4cd7-9aba-abe7863adbe3");
 
     ManageGuardian thisManageGuardian;
     /*
@@ -112,6 +116,8 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         setContentView(R.layout.activity_manage_guardian);
         mContext=this;
         thisManageGuardian = this;
+        PebbleKit.startAppOnPebble(getApplicationContext(), MY_UUID);           // opens app on Pebble
+
 
 //        //for alert window
 //        LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
@@ -182,6 +188,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 
         mLocationClient = new LocationClient(this, this, this);
         Log.i(TAG, "mLocationClient object created.");
+
     }
 
     @Override
@@ -765,6 +772,8 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
             // unable to geocode
         }
     }
+
+
 
 
 }
