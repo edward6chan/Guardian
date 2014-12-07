@@ -90,7 +90,9 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     private Context mContext;
 
     private static final int TEMP_KEY = 1;
-    private static final UUID MY_UUID = UUID.fromString("485579a8-8636-4cd7-9aba-abe7863adbe3");
+    //private static final UUID MY_UUID = UUID.fromString("485579a8-8636-4cd7-9aba-abe7863adbe3");
+    private static final UUID MY_UUID = UUID.fromString("3846bf8c-d031-4934-a796-49d55b355315");
+
 
     ManageGuardian thisManageGuardian;
     /*
@@ -210,7 +212,7 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         super.onResume();
         // mSensorManager.registerListener(this, mStepSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
-        mReceiver = new PebbleDataReceiver(UUID.fromString("485579a8-8636-4cd7-9aba-abe7863adbe3")) {
+        mReceiver = new PebbleDataReceiver(UUID.fromString("3846bf8c-d031-4934-a796-49d55b355315")) {
 
             Button toggle = (Button) findViewById(R.id.switch_status);
 
