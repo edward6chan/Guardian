@@ -36,6 +36,7 @@ import com.doomonafireball.betterpickers.hmspicker.HmsPickerBuilder;
 import com.doomonafireball.betterpickers.hmspicker.HmsPickerDialogFragment;
 import com.getpebble.android.kit.Constants;
 import com.getpebble.android.kit.PebbleKit;
+import com.getpebble.android.kit.PebbleKit.*;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -110,6 +111,12 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 
     int mImmobile = 0;
 
+    private static final int KEY_BUTTON_EVENT = 1;
+    private static final int BUTTON_EVENT_SELECT = 2;
+
+    private PebbleDataReceiver mReceiver;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +124,8 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         mContext=this;
         thisManageGuardian = this;
         PebbleKit.startAppOnPebble(getApplicationContext(), MY_UUID);           // opens app on Pebble
+
+
 
 
 //        //for alert window
@@ -161,6 +170,10 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         //getting saved ti`me from shared preferences file
         seconds = Integer.parseInt(mSharedPreferences.getString("TIMER", null));
 
+        PebbleDictionary dict = new PebbleDictionary();
+        dict.addString(0, name);
+        PebbleKit.sendDataToPebble(getApplicationContext(), MY_UUID, dict);
+
         //Bundle extras = getIntent().getExtras();
         //if (extras != null) {
 
@@ -197,6 +210,32 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
         super.onResume();
         // mSensorManager.registerListener(this, mStepSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
+        mReceiver = new PebbleDataReceiver(UUID.fromString("485579a8-8636-4cd7-9aba-abe7863adbe3")) {
+
+            Button toggle = (Button) findViewById(R.id.switch_status);
+
+            @Override
+            public void receiveData(Context context, int transactionId, PebbleDictionary data) {
+
+                PebbleKit.sendAckToPebble(context, transactionId);
+
+
+                if (data.getUnsignedInteger(KEY_BUTTON_EVENT) != null) {
+                    int button = data.getUnsignedInteger(KEY_BUTTON_EVENT).intValue();
+
+                    switch(button) {
+                        case BUTTON_EVENT_SELECT:
+
+
+                            toggle.performClick();
+                    }
+                }
+            }
+
+        };
+
+        PebbleKit.registerReceivedDataHandler(this, mReceiver);
+
         //move to be toggled when active
         //startUpdates();
     }
@@ -204,6 +243,8 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
     protected void onPause() {
         super.onPause();
         //mSensorManager.unregisterListener(this, mStepSensor);
+
+        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -596,6 +637,9 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
 
 
         }
+        PebbleDictionary dict = new PebbleDictionary();
+        dict.addInt32(BUTTON_EVENT_SELECT, 0);
+        PebbleKit.sendDataToPebble(getApplicationContext(), MY_UUID, dict);
     }
 
     final int PICK_CONTACT = 1;
@@ -770,6 +814,63 @@ public class ManageGuardian extends FragmentActivity implements HmsPickerDialogF
             }
         } catch (Exception e) {
             // unable to geocode
+        }
+    }
+
+    public void receiveData(Context context, int transactionId, PebbleDictionary data) {
+
+        PebbleKit.sendAckToPebble(context, transactionId);
+
+
+        if (data.getUnsignedInteger(KEY_BUTTON_EVENT) != null) {
+            int button = data.getUnsignedInteger(KEY_BUTTON_EVENT).intValue();
+
+            switch(button) {
+                case BUTTON_EVENT_SELECT:
+
+
+                    mEditAngel = (ImageButton) findViewById(R.id.edit_angel);
+                    mEditTimer = (ImageButton) findViewById(R.id.edit_timer);
+
+                    mToggleSwitch = (TextView) findViewById(R.id.toggle_active_inactive);
+                    String active_inactive = mToggleSwitch.getText().toString();
+
+                    if (active_inactive.equals("ACTIVE")) {
+                        mToggleSwitch.setText("INACTIVE");
+                        stopUpdates();
+                        // stop broadcast receiver
+                        unregisterReceiver(mActivityBroadcastReceiver);
+                        statusView.setText("");
+                        mImmobileTimer.cancel();
+                        mImmobileTimer.timerReset(secondsInt, mImmobile);
+                        mFlagTimerStarted = false;
+                        mEditAngel.setVisibility(View.VISIBLE);
+                        mEditTimer.setVisibility(View.VISIBLE);
+
+                    }
+                    if (active_inactive.equals("ANGEL CONTACTED")) {
+                        mToggleSwitch.setText("ACTIVE");
+                        // stop broadcast receiver
+//            unregisterReceiver(mActivityBroadcastReceiver);
+//            mImmobileTimer.cancel();
+//            mImmobileTimer.timerReset(secondsInt, mImmobile);
+//            mFlagTimerStarted = false;
+//            mEditAngel.setVisibility(View.VISIBLE);
+//            mEditTimer.setVisibility(View.VISIBLE);
+                        startUpdates();
+                        mEditAngel.setVisibility(View.GONE);
+                        mEditTimer.setVisibility(View.GONE);
+
+                    }
+                    if (active_inactive.equals("INACTIVE")) {
+                        mToggleSwitch.setText("ACTIVE");
+                        startUpdates();
+                        mEditAngel.setVisibility(View.GONE);
+                        mEditTimer.setVisibility(View.GONE);
+
+
+                    }
+            }
         }
     }
 
